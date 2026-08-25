@@ -3,6 +3,7 @@ import { meals } from './data.js';
 export const defaultState = {
   mood: ['든든하게'],
   recent: [],
+  recentHistory: [],
   budget: '7천원 ~ 1만원',
   distance: 10,
   location: '강남역 주변',

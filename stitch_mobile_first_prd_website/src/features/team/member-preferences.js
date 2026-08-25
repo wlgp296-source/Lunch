@@ -14,6 +14,15 @@ const defaultPreferences = {
   completed: false,
 };
 
+const formatHistoryDate = value => {
+  if (!value) return '최근';
+  const date = new Date(`${value}T00:00:00`);
+  const today = new Date();
+  const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) return '어제';
+  return new Intl.DateTimeFormat('ko-KR', { month: 'numeric', day: 'numeric' }).format(date);
+};
+
 export function renderTeamMemberPreferences(state) {
   const member = (state.teamRoom.members || []).find(item => item.name === state.teamRoom.currentUserName) || state.teamRoom.members?.[0];
   const preferences = { ...defaultPreferences, ...(member?.preferences || {}) };
@@ -26,8 +35,13 @@ export function renderTeamMemberPreferences(state) {
     </div>
   `).join('');
   const cravings = teamCravings.map(craving => `<button class="chip taste-chip ${preferences.cravings.includes(craving.id) ? 'selected' : ''}" data-member-craving="${craving.id}">${craving.image ? `<img class="taste-image" src="${craving.image}" alt="" />` : `<span class="taste-emoji">${craving.emoji}</span>`}<span>${craving.label}</span></button>`).join('');
+  const localHistory = (state.records || []).map(record => ({ mealId: record.mealId, mealName: record.mealName, eatenDate: (record.eatenAt || record.createdAt || '').slice(0, 10), status: record.status }));
+  const history = [...(state.recentHistory || []), ...localHistory].filter((record, index, records) => records.findIndex(item => `${item.mealName}-${item.eatenDate}` === `${record.mealName}-${record.eatenDate}`) === index).slice(0, 5);
+  const historyCards = history.length
+    ? `<div class="recent-history-list">${history.map(record => `<button type="button" class="recent-history-card ${preferences.recent.includes(record.mealName) ? 'selected' : ''}" data-member-recent="${record.mealName}"><span class="recent-history-icon">🍽️</span><span class="recent-history-main"><b>${record.mealName}</b><small>${record.category || '점심 메뉴'}</small></span><span class="recent-history-date">${formatHistoryDate(record.eatenDate)}</span></button>`).join('')}</div>`
+    : '<div class="recent-history-empty">아직 저장된 식사 기록이 없어요.</div>';
   const recent = recentMenus.map(menu => `<button class="tag ${preferences.recent.includes(menu) ? 'selected' : ''}" data-member-recent="${menu}">${menu}</button>`).join('');
-  return shell(`<section class="page-content preference-content team-member-preferences"><div class="flow-intro"><div class="flow-icon">${icon('person')}</div><h2>${member?.name || '팀원'}님의 메뉴 조건</h2><p>팀원마다 자기 조건을 입력하면 공통으로 맞는 메뉴를 자동으로 찾아요.</p></div><div class="section-block"><h2>기본 취향</h2><p class="section-help">각 항목에서 하나씩 선택해 주세요.</p>${axisSections}</div><div class="section-block"><h2>오늘의 당김</h2><p class="section-help">여러 개를 선택할 수 있어요.</p><div class="taste-grid">${cravings}</div></div><div class="section-block"><h2>최근 먹은 메뉴</h2><p class="section-help">최근 먹은 메뉴는 추천에서 우선 제외해요.</p><div class="tag-list">${recent}</div></div><button class="primary-button" data-action="save-member-preferences">내 조건 저장하기</button></section>`, '내 조건 입력');
+  return shell(`<section class="page-content preference-content team-member-preferences"><div class="flow-intro"><div class="flow-icon">${icon('person')}</div><h2>${member?.name || '팀원'}님의 메뉴 조건</h2><p>팀원마다 자기 조건을 입력하면 공통으로 맞는 메뉴를 자동으로 찾아요.</p></div><div class="section-block"><h2>기본 취향</h2><p class="section-help">각 항목에서 하나씩 선택해 주세요.</p>${axisSections}</div><div class="section-block"><h2>오늘의 당김</h2><p class="section-help">여러 개를 선택할 수 있어요.</p><div class="taste-grid">${cravings}</div></div><div class="section-block"><h2>최근 먹은 메뉴</h2><p class="section-help">어제 먹은 메뉴부터 보여드려요. 누르면 오늘 추천에서 제외해요.</p>${historyCards}<p class="recent-history-label">빠른 선택</p><div class="tag-list">${recent}</div></div><button class="primary-button" data-action="save-member-preferences">내 조건 저장하기</button></section>`, '내 조건 입력');
 }
 
 export function bindTeamMemberPreferencesEvents({ state, save, go, render }) {

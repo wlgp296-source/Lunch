@@ -85,3 +85,24 @@ export async function loadRecentMealNames(limit = 30) {
   if (error) throw error;
   return [...new Set((data || []).map(item => item.meal_name).filter(Boolean))];
 }
+
+export async function loadRecentMealHistory(limit = 30) {
+  const user = await ensureSupabaseUser();
+  if (!supabase || !user) return [];
+
+  const { data, error } = await supabase
+    .from('meal_history')
+    .select('meal_id, meal_name, category, source, status, eaten_date')
+    .order('eaten_date', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data || []).filter(item => item.meal_name).map(item => ({
+    mealId: item.meal_id,
+    mealName: item.meal_name,
+    category: item.category,
+    source: item.source,
+    status: item.status,
+    eatenDate: item.eaten_date,
+  }));
+}

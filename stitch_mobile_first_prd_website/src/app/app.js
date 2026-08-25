@@ -11,7 +11,7 @@ import { renderTeamPreferences, bindTeamPreferencesEvents } from '../features/te
 import { renderTeamRecommendations, bindTeamRecommendationsEvents } from '../features/team/recommendations.js';
 import { renderTeamMemberPreferences, bindTeamMemberPreferencesEvents } from '../features/team/member-preferences.js';
 import { renderHistory, bindHistoryEvents } from '../features/history.js';
-import { ensureSupabaseUser, loadRecentMealNames } from '../shared/supabase.js';
+import { ensureSupabaseUser, loadRecentMealHistory, loadRecentMealNames } from '../shared/supabase.js';
 
 const app = document.querySelector('#app');
 
@@ -27,6 +27,13 @@ loadRecentMealNames().then(recentNames => {
   if (currentMember?.preferences) {
     currentMember.preferences.recent = [...new Set([...recentNames, ...(currentMember.preferences.recent || [])])];
   }
+  saveState();
+  renderApp();
+}).catch(() => {});
+
+loadRecentMealHistory().then(history => {
+  if (!history.length) return;
+  state.recentHistory = history;
   saveState();
   renderApp();
 }).catch(() => {});
