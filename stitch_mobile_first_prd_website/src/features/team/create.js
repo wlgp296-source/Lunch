@@ -33,6 +33,7 @@ export function bindTeamCreateEvents({ state, save, go }) {
       menuRoundStarted: false,
       teamVotes: {},
       teamVoters: {},
+      teamVoteSelections: {},
     };
     state.teamVotes = {};
     state.myVotes = [];

@@ -110,6 +110,7 @@ export function bindTeamPreferencesEvents({ state, save, go, render }) {
   state.teamRoom.menuRoundStarted = false;
   state.teamRoom.teamVotes = {};
   state.teamRoom.teamVoters = {};
+  state.teamRoom.teamVoteSelections = {};
   save();
   const hasCurrentLocation = Boolean(state.teamPreferences.coordinates?.latitude && state.teamPreferences.coordinates?.longitude);
   if (hasCurrentLocation && (!state.teamPreferences.location || state.teamPreferences.location === '강남역 주변')) {
@@ -149,6 +150,7 @@ export function bindTeamPreferencesEvents({ state, save, go, render }) {
     state.teamRoom.menuRoundStarted = true;
     state.teamRoom.teamVotes = {};
     state.teamRoom.teamVoters = {};
+    state.teamRoom.teamVoteSelections = {};
     save();
     await publishTeamRoom(state).catch(() => {});
     go('team-recommendations');

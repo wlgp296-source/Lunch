@@ -22,6 +22,11 @@ export async function syncTeamRoom(state, { save, onChange } = {}) {
   const previous = JSON.stringify({ room: state.teamRoom, preferences: state.teamPreferences });
   state.teamRoom = { ...state.teamRoom, ...(data.room || {}), currentUserName: currentUserName || data.room?.currentUserName || '' };
   if (data.room?.teamVotes) state.teamVotes = { ...data.room.teamVotes };
+  const currentMember = (state.teamRoom.members || []).find(member => member.name === state.teamRoom.currentUserName);
+  const voterKey = currentMember?.id || state.teamRoom.currentUserName;
+  if (data.room?.teamVoteSelections && Object.prototype.hasOwnProperty.call(data.room.teamVoteSelections, voterKey)) {
+    state.myVotes = [...(data.room.teamVoteSelections[voterKey] || [])];
+  }
   if (data.preferences) state.teamPreferences = { ...state.teamPreferences, ...data.preferences };
   const changed = previous !== JSON.stringify({ room: state.teamRoom, preferences: state.teamPreferences });
   if (changed) {

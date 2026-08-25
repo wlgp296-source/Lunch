@@ -27,6 +27,7 @@ export const defaultState = {
     menuRoundStarted: false,
     teamVotes: {},
     teamVoters: {},
+    teamVoteSelections: {},
   },
   teamPreferences: {
     mood: ['든든하게'],

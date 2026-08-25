@@ -13,10 +13,22 @@ async function loadVoteImages(voteMeals) {
 }
 
 function voteSummary(state, voteMeals) {
-  return voteMeals.reduce((summary, meal) => {
-    summary[meal.id] = Number(state.teamVotes?.[meal.id] || 0);
+  const summary = voteMeals.reduce((result, meal) => ({ ...result, [meal.id]: 0 }), {});
+  const selections = state.teamRoom?.teamVoteSelections;
+  if (selections && Object.keys(selections).length) {
+    Object.values(selections).flat().forEach(id => {
+      if (Object.prototype.hasOwnProperty.call(summary, id)) summary[id] += 1;
+    });
     return summary;
-  }, {});
+  }
+  return voteMeals.reduce((result, meal) => {
+    result[meal.id] = Math.max(0, Number(state.teamVotes?.[meal.id] || 0));
+    return result;
+  }, summary);
+}
+
+function countVoteSelections(selections) {
+  return Object.values(selections || {}).flat().reduce((counts, id) => ({ ...counts, [id]: Number(counts[id] || 0) + 1 }), {});
 }
 
 function winningMealIds(votes) {
@@ -60,11 +72,12 @@ export function bindTeamEvents({ state, save, go, render }) {
     const id = button.dataset.vote;
     const hasVote = state.myVotes.includes(id);
     state.myVotes = hasVote ? state.myVotes.filter(item => item !== id) : [...state.myVotes, id];
-    state.teamVotes[id] = Number(state.teamVotes[id] || 0) + (hasVote ? -1 : 1);
     state.teamRoom.menuRoundStarted = true;
-    state.teamRoom.teamVotes = { ...state.teamVotes };
     const currentMember = (state.teamRoom.members || []).find(member => member.name === state.teamRoom.currentUserName);
     const voterKey = currentMember?.id || state.teamRoom.currentUserName;
+    state.teamRoom.teamVoteSelections = { ...(state.teamRoom.teamVoteSelections || {}), [voterKey]: [...state.myVotes] };
+    state.teamVotes = countVoteSelections(state.teamRoom.teamVoteSelections);
+    state.teamRoom.teamVotes = { ...state.teamVotes };
     state.teamRoom.teamVoters = { ...(state.teamRoom.teamVoters || {}), [voterKey]: state.myVotes.length > 0 };
     state.rouletteResult = null;
     save();
