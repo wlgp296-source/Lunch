@@ -101,9 +101,10 @@ begin
 
   -- 기존 목록과 새 목록을 합친 뒤, 같은 ID 또는 같은 닉네임은 한 명으로 정리합니다.
   for incoming_member in
-    select value from jsonb_array_elements(
-      coalesce(stored_room->'members', '[]'::jsonb) || coalesce(p_room->'members', '[]'::jsonb)
-    )
+    (select elements.member
+       from jsonb_array_elements(
+         coalesce(stored_room->'members', '[]'::jsonb) || coalesce(p_room->'members', '[]'::jsonb)
+       ) as elements(member))
   loop
     select ordinality - 1, value
       into member_index, previous_member
