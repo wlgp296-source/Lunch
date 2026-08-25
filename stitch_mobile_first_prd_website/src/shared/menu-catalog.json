@@ -96,6 +96,12 @@
     { "id": "kalguksu", "name": "칼국수", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["mild", "hangover"], "tasteTags": ["담백", "따뜻함", "든든함"], "price": 9000 },
     { "id": "sujebi", "name": "수제비", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["mild", "hangover"], "tasteTags": ["담백", "따뜻함", "포근함"], "price": 9000 },
     { "id": "kongguksu", "name": "콩국수", "category": "한식", "fullness": "가볍게", "temperature": "차갑게", "form": "면", "cravings": ["mild"], "tasteTags": ["담백", "고소", "시원함"], "price": 10000 },
+    { "id": "pork-kimchi-stew", "name": "돼지김치찌개", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["spicy", "hangover"], "tasteTags": ["매콤", "얼큰", "따뜻함"], "price": 10000 },
+    { "id": "nakji-bokkeum", "name": "낙지볶음", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "고기", "cravings": ["spicy"], "tasteTags": ["매콤", "쫄깃", "불향"], "price": 13000 },
+    { "id": "ohsam-bulgogi", "name": "오삼불고기", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "고기", "cravings": ["spicy"], "tasteTags": ["매콤", "달콤", "불향"], "price": 14000 },
+    { "id": "gopchang-jeongol", "name": "곱창전골", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["spicy", "hangover"], "tasteTags": ["매콤", "얼큰", "구수함"], "price": 15000 },
+    { "id": "haemul-jjim", "name": "해물찜", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "고기", "cravings": ["spicy"], "tasteTags": ["매콤", "쫄깃", "풍성함"], "price": 16000 },
+    { "id": "dakgaejang", "name": "닭개장", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["spicy", "hangover"], "tasteTags": ["매콤", "얼큰", "따뜻함"], "price": 10000 },
 
     { "id": "yusanseul", "name": "유산슬", "category": "중식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "고기", "cravings": ["mild"], "tasteTags": ["담백", "고소", "풍성함"], "price": 15000 },
     { "id": "yangjangpi", "name": "양장피", "category": "중식", "fullness": "가볍게", "temperature": "차갑게", "form": "고기", "cravings": ["sour"], "tasteTags": ["새콤", "담백", "신선함"], "price": 14000 },
