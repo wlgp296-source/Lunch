@@ -1,0 +1,62 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+export const supabase = supabaseUrl && supabasePublishableKey
+  ? createClient(supabaseUrl, supabasePublishableKey)
+  : null;
+
+let anonymousUserPromise = null;
+
+export async function ensureSupabaseUser() {
+  if (!supabase) return null;
+  if (anonymousUserPromise) return anonymousUserPromise;
+
+  anonymousUserPromise = (async () => {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (sessionData.session?.user) return sessionData.session.user;
+
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) throw error;
+    return data.user;
+  })().catch(error => {
+    anonymousUserPromise = null;
+    throw error;
+  });
+
+  return anonymousUserPromise;
+}
+
+export async function saveMealHistory({ meal, source = 'solo', status = 'planned' }) {
+  const user = await ensureSupabaseUser();
+  if (!supabase || !user || !meal) return false;
+
+  const { error } = await supabase.from('meal_history').upsert({
+    user_id: user.id,
+    meal_id: meal.id,
+    meal_name: meal.name,
+    category: meal.category || null,
+    source,
+    status,
+    eaten_date: new Date().toISOString().slice(0, 10),
+  }, { onConflict: 'user_id,meal_id,eaten_date' });
+
+  if (error) throw error;
+  return true;
+}
+
+export async function loadRecentMealNames(limit = 30) {
+  const user = await ensureSupabaseUser();
+  if (!supabase || !user) return [];
+
+  const { data, error } = await supabase
+    .from('meal_history')
+    .select('meal_name')
+    .order('eaten_date', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return [...new Set((data || []).map(item => item.meal_name).filter(Boolean))];
+}

@@ -1,0 +1,18 @@
+{
+  "name": "lunch-roulette-local",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --configLoader runner --host 127.0.0.1 --port 4173",
+    "build": "vite --configLoader runner build",
+    "preview": "vite --configLoader runner preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.3"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
+    "leaflet": "^1.9.4"
+  }
+}

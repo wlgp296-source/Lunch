@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lunch Roulette - Menu Recommendations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary": "#60233e",
+                        "on-tertiary-container": "#ffaac8",
+                        "accent-red": "#E14A3B",
+                        "surface-container-low": "#f3f4ed",
+                        "on-secondary-container": "#67645d",
+                        "inverse-on-surface": "#f0f1ea",
+                        "on-primary-fixed-variant": "#23501e",
+                        "inverse-surface": "#2e312c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary": "#154212",
+                        "tertiary-fixed": "#ffd9e4",
+                        "primary-fixed": "#bcf0ae",
+                        "surface-container": "#edefe7",
+                        "tertiary-fixed-dim": "#ffb0cc",
+                        "on-background": "#191c18",
+                        "tertiary-container": "#7c3a55",
+                        "on-primary-container": "#9dd090",
+                        "background": "#f9faf2",
+                        "surface-dim": "#d9dbd3",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#494740",
+                        "on-tertiary-fixed": "#3b0520",
+                        "secondary-fixed": "#e7e2d8",
+                        "surface-container-high": "#e7e9e1",
+                        "accent-lime": "#A4C639",
+                        "surface-tint": "#3b6934",
+                        "on-surface": "#191c18",
+                        "on-surface-variant": "#42493e",
+                        "surface": "#f9faf2",
+                        "surface-stroke": "#E9E3D5",
+                        "accent-orange": "#F37021",
+                        "surface-variant": "#e2e3dc",
+                        "surface-bright": "#f9faf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a1d494",
+                        "primary-container": "#2d5a27",
+                        "secondary-container": "#e7e2d8",
+                        "secondary-fixed-dim": "#cac6bd",
+                        "surface-container-highest": "#e2e3dc",
+                        "primary-fixed-dim": "#a1d494",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#1d1c16",
+                        "outline-variant": "#c2c9bb",
+                        "on-secondary": "#ffffff",
+                        "outline": "#72796e",
+                        "neutral-text": "#1A1C19",
+                        "on-tertiary-fixed-variant": "#71314c",
+                        "on-primary-fixed": "#002201",
+                        "secondary": "#615e57"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "container-margin": "20px",
+                        "stack-sm": "8px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Manrope"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "title-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }]
+                    },
+                    "boxShadow": {
+                        "soft-paper": "0 4px 20px -2px rgba(21, 66, 18, 0.05)",
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #f9faf2; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background min-h-screen text-on-background font-body-lg flex flex-col md:items-center">
+<!-- Mobile Container (Max width for desktop to mimic mobile view) -->
+<main class="w-full max-w-md mx-auto bg-background min-h-screen flex flex-col shadow-none md:shadow-2xl md:my-8 rounded-none md:rounded-[40px] overflow-hidden border-0 md:border-8 md:border-white relative pb-24">
+<!-- TopAppBar (Transactional - Hidden Nav Shell Context, but keeps back button as per design) -->
+<header class="flex justify-between items-center w-full px-container-margin py-stack-md bg-background sticky top-0 z-10">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface" style="font-variation-settings: 'FILL' 0;">arrow_back_ios_new</span>
+</button>
+<h1 class="font-title-md text-title-md text-on-surface flex-1 text-center pr-10">추천 메뉴 3개</h1>
+<!-- Empty div for flex balance -->
+<div class="w-10"></div>
+</header>
+<div class="px-container-margin pt-stack-sm pb-stack-lg flex-1 overflow-y-auto hide-scrollbar">
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant mb-stack-lg mt-unit">
+                취향과 조건에 맞춘 추천이에요! ✨
+            </p>
+<!-- Recommendation Cards List -->
+<div class="flex flex-col gap-stack-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-stroke flex overflow-hidden shadow-soft-paper transition-transform active:scale-[0.98]">
+<div class="w-[120px] shrink-0 bg-surface-container-high h-full min-h-[140px] relative">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A top-down, high-quality editorial food photography shot of a traditional Korean Dolsot Bibimbap (stone bowl rice). The bowl is steaming hot, filled with vibrant vegetables, perfectly seared beef, and a raw egg yolk in the center. The setting is a bright, modern light-mode studio with warm cream backgrounds and soft natural lighting emphasizing the fresh, appetizing textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7QMY9BPgAWGSoeEkQnwVBJhNArEtg8y9USsLZWqAhlKSxy-9NzjyUJsUCaPRSjrL1WrprZlkqXKwSZE1I_xMLtlMHLS0buqi1xPXSxSwF00Dk6T-JQ23rHWVxmVNxVg6lix3rKzONyrKcsXmYB4fCcYyq-88NRKOrWR-XBbr0qn6NYeogycrjt1dDnezIUwjt8nU9tsa9WEUku-QjwmtWeGp60IamB99jydDBT_Gk3m5SP3xipUfQ"/>
+</div>
+<div class="p-4 flex flex-col flex-1 justify-center">
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-title-md text-title-md text-on-surface">돌솥 비빔밥</h2>
+<span class="font-label-caps text-label-caps text-primary bg-primary-fixed px-2 py-0.5 rounded-full">매칭 92%</span>
+</div>
+<ul class="font-body-sm text-body-sm text-on-surface-variant space-y-1 mt-2">
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-lime" style="font-variation-settings: 'FILL' 1;">local_dining</span>
+                                든든하게 딱 좋아요
+                            </li>
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">eco</span>
+                                건강한 한 끼
+                            </li>
+<li class="flex items-center gap-1.5 mt-1 text-outline">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                                10분 거리
+                            </li>
+</ul>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-stroke flex overflow-hidden shadow-soft-paper transition-transform active:scale-[0.98]">
+<div class="w-[120px] shrink-0 bg-surface-container-high h-full min-h-[140px] relative">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A close-up, high-end culinary photo of Mentaiko Cream Pasta (Pollack roe pasta) swirled elegantly on a white ceramic plate. The creamy sauce is rich and glossy, garnished with a sprinkle of nori and a delicate dollop of pink roe on top. The aesthetic is bright, modern, and appetizing, set against a warm cream backdrop typical of premium lifestyle magazines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOgVVxExMQMd_DcSdZxmn_eCc4D3ECfYTZzYQi6ADgXrLqKf-MmRMJz69VYTczzBo_rhZlq1_nTVUMFp7DUhuggSfhQFCESxg-rNYhwW2XjbDV78pteE6ypK_B5q44pfWTKO8ANlhx3GfylBU5UGVDr94so45_423FqqYbvATDm8h4Kz_p-nqxGqxxqpLIAHLlpqj_ysh5WAC6ajV5OZ85Sq22iPh7qIK1CuJIljireTzAwzdrbCWu"/>
+</div>
+<div class="p-4 flex flex-col flex-1 justify-center">
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-title-md text-title-md text-on-surface">명란 크림 파스타</h2>
+<span class="font-label-caps text-label-caps text-primary bg-primary-fixed px-2 py-0.5 rounded-full">매칭 87%</span>
+</div>
+<ul class="font-body-sm text-body-sm text-on-surface-variant space-y-1 mt-2">
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">ramen_dining</span>
+                                깔끔한 맛
+                            </li>
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-orange" style="font-variation-settings: 'FILL' 1;">star</span>
+                                색다른 메뉴
+                            </li>
+<li class="flex items-center gap-1.5 mt-1 text-outline">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                                8분 거리
+                            </li>
+</ul>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg border border-surface-stroke flex overflow-hidden shadow-soft-paper transition-transform active:scale-[0.98]">
+<div class="w-[120px] shrink-0 bg-surface-container-high h-full min-h-[140px] relative">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A vibrant, mouth-watering photograph of Malatang (Spicy Chinese hot pot) in a large rustic bowl. The broth is a deep, spicy red, loaded with various fresh ingredients like lotus root, enoki mushrooms, and tofu skin. The lighting is soft but vibrant, highlighting the appetizing red tones against a clean, warm cream and white minimalist background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBqpPRnlK7OHidSt9Zw2JV3i5sJB9qZkHzHNaSx4kzyRrJqjfGIPza2XV4HLu7iI-yASSZrh5MYWReLm54L0UFtOG8tEDfHcmhThisV3wGqhXUAGxCLS6y-MbArgdAQanbBg2GGXJSXy0qsQO7RaCmkpSHqq1cmX42AkKH6FmAv_CXOdhFj89CcVyNW-vqGg6-oYUyzXuxnENPWcKDTsoEKqt4NhlZ1V8GQAsxsvBep-c19XzhYnG7"/>
+</div>
+<div class="p-4 flex flex-col flex-1 justify-center">
+<div class="flex justify-between items-start mb-1">
+<h2 class="font-title-md text-title-md text-on-surface">마라탕</h2>
+<span class="font-label-caps text-label-caps text-primary bg-primary-fixed px-2 py-0.5 rounded-full">매칭 83%</span>
+</div>
+<ul class="font-body-sm text-body-sm text-on-surface-variant space-y-1 mt-2">
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-red" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                                매콤한 게 땡겨요
+                            </li>
+<li class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-orange" style="font-variation-settings: 'FILL' 1;">soup_kitchen</span>
+                                따뜻한 국물
+                            </li>
+<li class="flex items-center gap-1.5 mt-1 text-outline">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">location_on</span>
+                                9분 거리
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-stack-lg flex flex-col gap-stack-md">
+<button class="w-full py-4 rounded-full border border-surface-stroke bg-surface-container-lowest text-accent-red font-title-md text-title-md shadow-soft-paper flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">refresh</span>
+                    다시 추천하기
+                </button>
+<button class="w-full py-2 text-on-surface-variant font-body-sm text-body-sm flex items-center justify-center gap-1 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">tune</span>
+                    필터 다시 설정하기
+                </button>
+</div>
+</div>
+</main>
+</body></html>

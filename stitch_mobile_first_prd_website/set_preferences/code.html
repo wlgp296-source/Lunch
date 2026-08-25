@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lunch Roulette - Mood &amp; Preferences</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Playfair+Display:ital,wght@0,700;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary": "#60233e",
+                        "on-tertiary-container": "#ffaac8",
+                        "accent-red": "#E14A3B",
+                        "surface-container-low": "#f3f4ed",
+                        "on-secondary-container": "#67645d",
+                        "inverse-on-surface": "#f0f1ea",
+                        "on-primary-fixed-variant": "#23501e",
+                        "inverse-surface": "#2e312c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary": "#154212",
+                        "tertiary-fixed": "#ffd9e4",
+                        "primary-fixed": "#bcf0ae",
+                        "surface-container": "#edefe7",
+                        "tertiary-fixed-dim": "#ffb0cc",
+                        "on-background": "#191c18",
+                        "tertiary-container": "#7c3a55",
+                        "on-primary-container": "#9dd090",
+                        "background": "#f9faf2",
+                        "surface-dim": "#d9dbd3",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#494740",
+                        "on-tertiary-fixed": "#3b0520",
+                        "secondary-fixed": "#e7e2d8",
+                        "surface-container-high": "#e7e9e1",
+                        "accent-lime": "#A4C639",
+                        "surface-tint": "#3b6934",
+                        "on-surface": "#191c18",
+                        "on-surface-variant": "#42493e",
+                        "surface": "#f9faf2",
+                        "surface-stroke": "#E9E3D5",
+                        "accent-orange": "#F37021",
+                        "surface-variant": "#e2e3dc",
+                        "surface-bright": "#f9faf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a1d494",
+                        "primary-container": "#2d5a27",
+                        "secondary-container": "#e7e2d8",
+                        "secondary-fixed-dim": "#cac6bd",
+                        "surface-container-highest": "#e2e3dc",
+                        "primary-fixed-dim": "#a1d494",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#1d1c16",
+                        "outline-variant": "#c2c9bb",
+                        "on-secondary": "#ffffff",
+                        "outline": "#72796e",
+                        "neutral-text": "#1A1C19",
+                        "on-tertiary-fixed-variant": "#71314c",
+                        "on-primary-fixed": "#002201",
+                        "secondary": "#615e57"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "container-margin": "20px",
+                        "stack-sm": "8px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Manrope"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "title-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #154212; /* primary */
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #154212;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex flex-col md:max-w-md md:mx-auto shadow-xl dark:bg-background">
+<!-- Top App Bar (Modified to act as a back/header for this sub-flow) -->
+<header class="bg-background dark:bg-background sticky top-0 z-50 pt-12 pb-4 px-container-margin flex items-center justify-between">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back_ios_new</span>
+</button>
+<h1 class="font-title-md text-title-md text-on-surface font-bold absolute left-1/2 transform -translate-x-1/2">오늘의 기분</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<main class="flex-1 overflow-y-auto px-container-margin pb-32">
+<!-- Mood Selection -->
+<section class="mt-stack-md">
+<div class="grid grid-cols-2 gap-3">
+<!-- Active Chip -->
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-primary bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+<span class="text-xl">💪</span>
+<span class="font-body-lg text-primary font-bold">든든하게</span>
+</button>
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow text-on-surface-variant">
+<span class="text-xl">🌱</span>
+<span class="font-body-lg">깔끔하게</span>
+</button>
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow text-on-surface-variant">
+<span class="text-xl">🌶️</span>
+<span class="font-body-lg">매콤하게</span>
+</button>
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow text-on-surface-variant">
+<span class="text-xl">♨️</span>
+<span class="font-body-lg">따뜻하게</span>
+</button>
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow text-on-surface-variant">
+<span class="text-xl">🥗</span>
+<span class="font-body-lg">건강하게</span>
+</button>
+<button class="flex items-center gap-2 py-3 px-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow text-on-surface-variant">
+<span class="text-xl">✨</span>
+<span class="font-body-lg">색다르게</span>
+</button>
+</div>
+</section>
+<!-- Search & Recent Tags -->
+<section class="mt-stack-lg">
+<h2 class="font-title-md text-title-md mb-stack-sm text-on-surface">최근 찾은 메뉴</h2>
+<div class="relative mb-4">
+<span class="material-symbols-outlined absolute left-4 top-1/2 transform -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-lowest border border-surface-stroke rounded-full py-3 pl-12 pr-4 text-body-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-sm placeholder-outline-variant" placeholder="메뉴 검색" type="text"/>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">돈까스</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">제육볶음</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">마라탕</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">샐러드</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">비빔밥</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">파스타</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">김밥</button>
+<button class="px-4 py-2 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">쌀국수</button>
+</div>
+</section>
+<!-- Budget -->
+<section class="mt-stack-lg">
+<h2 class="font-title-md text-title-md mb-stack-sm text-on-surface">예산</h2>
+<div class="flex overflow-x-auto no-scrollbar gap-2 pb-2">
+<button class="flex-shrink-0 px-4 py-2 rounded-full border border-surface-stroke text-on-surface-variant font-body-sm hover:bg-surface-container transition-colors whitespace-nowrap">~ 7천원</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full border border-primary bg-surface-container-lowest text-primary font-bold text-body-sm whitespace-nowrap shadow-sm">7천원 ~ 1만원</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full border border-surface-stroke text-on-surface-variant font-body-sm hover:bg-surface-container transition-colors whitespace-nowrap">1만원 ~ 1.5만원</button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full border border-surface-stroke text-on-surface-variant font-body-sm hover:bg-surface-container transition-colors whitespace-nowrap">1.5만원 ~</button>
+</div>
+</section>
+<!-- Walking Distance Slider -->
+<section class="mt-stack-lg">
+<h2 class="font-title-md text-title-md mb-stack-sm text-on-surface">걸어서 이동 가능 거리</h2>
+<div class="px-2 mt-8 mb-6 relative">
+<div class="absolute -top-6 left-0 text-outline">
+<span class="material-symbols-outlined text-xl">directions_walk</span>
+</div>
+<input class="w-full h-1 bg-surface-stroke rounded-lg appearance-none cursor-pointer" max="20" min="5" step="5" type="range" value="10"/>
+<div class="flex justify-between text-label-caps text-on-surface-variant mt-3 px-1">
+<span>5분</span>
+<span class="text-primary font-bold">10분</span>
+<span>15분</span>
+<span>20분</span>
+</div>
+</div>
+</section>
+<!-- Location -->
+<section class="mt-stack-lg mb-8">
+<h2 class="font-title-md text-title-md mb-stack-sm text-on-surface">위치 선택</h2>
+<div class="flex items-center justify-between p-4 rounded-xl border border-surface-stroke bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="font-body-lg text-on-surface">강남역 주변</span>
+</div>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-body-sm hover:bg-surface-variant transition-colors">변경</button>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom CTA -->
+<div class="fixed bottom-0 left-0 w-full md:max-w-md md:left-1/2 md:transform md:-translate-x-1/2 p-container-margin bg-background/90 backdrop-blur-sm border-t border-surface-stroke z-50">
+<button class="w-full bg-primary text-on-primary font-title-md py-4 rounded-xl shadow-lg hover:bg-primary-container hover:text-on-primary-container transition-colors active:scale-[0.98]">
+            추천 메뉴 3개
+        </button>
+</div>
+</body></html>

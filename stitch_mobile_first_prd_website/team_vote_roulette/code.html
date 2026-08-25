@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lunch Roulette - Team Voting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "tertiary": "#60233e",
+                        "on-tertiary-container": "#ffaac8",
+                        "accent-red": "#E14A3B",
+                        "surface-container-low": "#f3f4ed",
+                        "on-secondary-container": "#67645d",
+                        "inverse-on-surface": "#f0f1ea",
+                        "on-primary-fixed-variant": "#23501e",
+                        "inverse-surface": "#2e312c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary": "#154212",
+                        "tertiary-fixed": "#ffd9e4",
+                        "primary-fixed": "#bcf0ae",
+                        "surface-container": "#edefe7",
+                        "tertiary-fixed-dim": "#ffb0cc",
+                        "on-background": "#191c18",
+                        "tertiary-container": "#7c3a55",
+                        "on-primary-container": "#9dd090",
+                        "background": "#f9faf2",
+                        "surface-dim": "#d9dbd3",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#494740",
+                        "on-tertiary-fixed": "#3b0520",
+                        "secondary-fixed": "#e7e2d8",
+                        "surface-container-high": "#e7e9e1",
+                        "accent-lime": "#A4C639",
+                        "surface-tint": "#3b6934",
+                        "on-surface": "#191c18",
+                        "on-surface-variant": "#42493e",
+                        "surface": "#f9faf2",
+                        "surface-stroke": "#E9E3D5",
+                        "accent-orange": "#F37021",
+                        "surface-variant": "#e2e3dc",
+                        "surface-bright": "#f9faf2",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a1d494",
+                        "primary-container": "#2d5a27",
+                        "secondary-container": "#e7e2d8",
+                        "secondary-fixed-dim": "#cac6bd",
+                        "surface-container-highest": "#e2e3dc",
+                        "primary-fixed-dim": "#a1d494",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#1d1c16",
+                        "outline-variant": "#c2c9bb",
+                        "on-secondary": "#ffffff",
+                        "outline": "#72796e",
+                        "neutral-text": "#1A1C19",
+                        "on-tertiary-fixed-variant": "#71314c",
+                        "on-primary-fixed": "#002201",
+                        "secondary": "#615e57"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "container-margin": "20px",
+                        "stack-sm": "8px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Manrope"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Manrope"],
+                        "label-caps": ["Manrope"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "title-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .roulette-spin {
+            animation: spin 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(1440deg); /* Multiple rotations */ }
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen text-on-background font-body-lg flex justify-center">
+<div class="w-full max-w-md bg-surface-bright min-h-screen shadow-2xl relative overflow-hidden flex flex-col">
+<!-- TopAppBar (Based on Shared JSON, adapted for the context) -->
+<header class="bg-background dark:bg-background docked full-width top-0 bg-background dark:bg-background flat no shadows flex justify-between items-center w-full px-container-margin py-stack-md z-10 sticky">
+<button aria-label="Back" class="hover:bg-surface-container-high transition-colors p-2 rounded-full text-primary dark:text-inverse-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-title-md text-title-md text-primary dark:text-inverse-primary flex-1 text-center font-bold">우리팀 점심 투표</h1>
+<div class="flex items-center text-on-surface-variant font-body-sm hover:bg-surface-container-high transition-colors p-2 rounded-full cursor-pointer">
+<span class="material-symbols-outlined mr-1 text-[18px]">person</span>
+<span>6명</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-container-margin py-stack-md flex flex-col gap-stack-lg relative z-0">
+<!-- Tie Alert -->
+<div class="bg-error-container text-on-error-container rounded-lg py-3 px-4 flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-accent-red" style="font-variation-settings: 'FILL' 1;">error</span>
+<span class="font-title-md text-body-lg font-bold text-accent-red">동점입니다</span>
+</div>
+<!-- Voting List -->
+<section class="flex flex-col gap-stack-md">
+<!-- Item 1 -->
+<div class="bg-surface-container-lowest rounded-DEFAULT border border-surface-stroke p-3 flex items-center gap-4 shadow-sm relative overflow-hidden group hover:border-primary transition-colors cursor-pointer">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A top-down view of a traditional Korean Dolsot Bibimbap in a hot stone bowl, perfectly arranged with vibrant vegetables, beef, and a raw egg yolk in the center. The setting is bright, modern, and appetizing, following a premium modern Korean editorial aesthetic with soft ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6voVbPwF30RP55tio45JyLB4yYyoOiJ_t5KOIxcczLtvaM1fpoXG1tKfQR4y3aWubBzhyQBFKPudA7D8wAWvcCfm9pjW46UKK_BY_4K0PkY21HGe672qNxh3hnXl-Dy0C07vivbUE1GW5emqpMk-GcBCVGgNFZwlMykQZV89urfajY0sACEzxJuabUOxR0uyUtZDFdV55y4-rCn5D38OTRq8imVZ7bVuwsB3z0dnYY2xkqvbwCGHb"/>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-title-md text-body-lg font-bold">돌솥 비빔밥</h3>
+<span class="bg-accent-orange text-white rounded-full px-2 py-0.5 font-label-caps text-label-caps font-bold">2표</span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-orange rounded-full" style="width: 33%;"></div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-lowest rounded-DEFAULT border border-surface-stroke p-3 flex items-center gap-4 shadow-sm relative overflow-hidden group hover:border-primary transition-colors cursor-pointer">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of creamy Myeongran (pollack roe) pasta served on an elegant, minimalist white ceramic plate. The dish is garnished with delicate micro-greens. The background is a soft, warm cream tone, highlighting the modern, high-end culinary presentation with editorial precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW2j1iDcBqXq_QSEZ8IzYc0o6v9YKSeNbgKo4xSsqVREKSQYH_0j-rQwc7hXKCrcvS8TVFZn2wz8ykWKvmYS5R-KsoOijskLC1AP5YG8jXagsHSH9yyD0jN2-n-erBvOG7fwzZ2ZOBULJhc0mMUZbwVYKt3gyaWFzTzz37ZuCaEP0qMBICDYtxIZDzKNe76XXBghC5HRflv-4t36J0e-X4Qt3qzyMuEpRFTuk5cHIJ3q0lFn9y_QAw"/>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-title-md text-body-lg font-bold">명란 크림 파스타</h3>
+<span class="bg-accent-orange text-white rounded-full px-2 py-0.5 font-label-caps text-label-caps font-bold">2표</span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-orange rounded-full" style="width: 33%;"></div>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="bg-surface-container-lowest rounded-DEFAULT border border-surface-stroke p-3 flex items-center gap-4 shadow-sm relative overflow-hidden group hover:border-primary transition-colors cursor-pointer">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A steaming bowl of spicy Malatang filled with various vegetables, tofu, and meat slices. The broth is a rich, appetizing red. It is served in a rounded, organic-shaped bowl on a clean, light surface, capturing a cozy yet sophisticated food photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-ATD0gWIKwzlckO0iPamoWINDVPZtk_VbDXr1E7tX-EHQQ1N83ej2fjc3zhs2jBDAuya0pm5icJvh3EaWHRJ5OtHKc-sOae_nQuKNtjJqKaHguY1YRygWJ5rKazGbsycGQczH-fqwyiGvjBDTPNuh5KlAk74IO1PuiFNWru0zXOwAHGJL8hvQO2mu4eIJQAW9RhVnXEL4-vBhsQOIiG81n09QXnkcCOOY3lnKu9hLzsrm8RLphOjF"/>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center mb-2">
+<h3 class="font-title-md text-body-lg font-bold">마라탕</h3>
+<span class="bg-accent-orange text-white rounded-full px-2 py-0.5 font-label-caps text-label-caps font-bold">2표</span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-accent-orange rounded-full" style="width: 33%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Roulette Area -->
+<section class="mt-auto flex flex-col items-center justify-center relative pb-stack-lg">
+<!-- Confetti decoration (simplified CSS representation) -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden opacity-50 flex items-center justify-center">
+<span class="absolute w-2 h-2 bg-accent-red rounded-sm rotate-12 -ml-32 -mt-20"></span>
+<span class="absolute w-3 h-1 bg-accent-lime rounded-sm -rotate-45 ml-40 -mt-10"></span>
+<span class="absolute w-2 h-2 bg-primary rounded-full rotate-90 ml-20 mt-32"></span>
+<span class="absolute w-3 h-1 bg-accent-orange rounded-sm rotate-45 -ml-40 mt-10"></span>
+<span class="absolute w-1.5 h-1.5 bg-tertiary rounded-sm ml-32 mt-20"></span>
+</div>
+<div class="relative w-64 h-64">
+<!-- The Wheel (CSS Conic Gradient simulating segments) -->
+<div class="w-full h-full rounded-full border-4 border-surface-stroke bg-surface-container-lowest shadow-lg overflow-hidden flex items-center justify-center relative transition-transform" id="rouletteWheel" style="background: conic-gradient(
+                            var(--tw-colors-surface-container) 0deg 120deg,
+                            #fce8db 120deg 240deg,
+                            var(--tw-colors-secondary-fixed) 240deg 360deg
+                         );">
+<!-- Segment Images (Absolute positioned for simplicity in this demo) -->
+<div class="absolute top-8 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A top-down view of a traditional Korean Dolsot Bibimbap in a hot stone bowl, perfectly arranged with vibrant vegetables, beef, and a raw egg yolk in the center. The setting is bright, modern, and appetizing, following a premium modern Korean editorial aesthetic with soft ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_eoCfHQOtFYsfDwtDNpBIZJSzmSKfCXr6EyUVZIFORG01dQkD450THPkB7l3VPnfipJA-Mxp10oa3PVBJJU1WPDg_7HJAKR_jj4zc1syybz7uP1SE-2XV_JYYd8ES61_zWnMV3_j9ZH8oWeJd6vXDKKodendeYBJfgxrKPNrmz9tdZAxQ2zS2D41dk3TkDC6doooKXxB_gFg0ioug7I4yL3pl3tKx9lJ8kOcjYXWSv95pyHGanJ9j"/>
+</div>
+<div class="absolute bottom-12 right-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A steaming bowl of spicy Malatang filled with various vegetables, tofu, and meat slices. The broth is a rich, appetizing red. It is served in a rounded, organic-shaped bowl on a clean, light surface, capturing a cozy yet sophisticated food photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdkw8rHe5udAjK5BAVboWTOgaJlg8-bahZ9iBCH8we907FMvnH8FlJtFiAxgEGjhcfjLJgexfLxIBGlGwnULr7Gkebe8ZCPQMyzqOrwJ7WTZFYAXK60cypMk2HdtQRlyzqmrf7cPggPaY7NArhfpyWSuScAC2X4xomYp6BVtKNWMZsjGoxSN-Qp5rUCGu2iwffxgu9VTiG7jvvnrWv6zjKcBQGLIWPhfpJz-YKbSs103WkCAxpwnqz"/>
+</div>
+<div class="absolute bottom-12 left-6 w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of creamy Myeongran (pollack roe) pasta served on an elegant, minimalist white ceramic plate. The dish is garnished with delicate micro-greens. The background is a soft, warm cream tone, highlighting the modern, high-end culinary presentation with editorial precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTGRy8QVGyLf5uynCyzj50Y8jO_h4lKUGaAi5lDhsCjLNbwXkkIyV3P209s0k5398pP32T-sXU3iypeqVrrxFWgptgBPClbwdwzmmZUz7pmvb2XJIPvbO8KUfJCKqpe26F3V8Xe62SKgLU-M5hyCDJhjr7fP_aGpUNr2iqXrJgys8un2Eu0vkvn0-ARrHzvmKhO1oO6Y7oVmphjEZUvcGsOPdwIZN2pNSclrcZDgusCVKbuK7rYglv"/>
+</div>
+<!-- Inner Circle Overlay to create donut look -->
+<div class="absolute w-24 h-24 bg-surface-container-lowest rounded-full shadow-inner z-10 flex items-center justify-center border border-surface-stroke">
+</div>
+</div>
+<!-- Center Pointer & Button -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+<div class="w-0 h-0 border-l-[10px] border-r-[10px] border-b-[20px] border-l-transparent border-r-transparent border-b-primary -mt-6"></div>
+<button class="w-20 h-20 bg-primary text-on-primary rounded-full shadow-lg font-title-md text-body-lg font-bold flex items-center justify-center text-center leading-tight hover:scale-95 transition-transform" onclick="document.getElementById('rouletteWheel').classList.toggle('roulette-spin')">
+                            룰렛<br/>돌리기
+                        </button>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-sm mt-stack-md flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-primary rounded-full inline-block"></span>
+                    모두의 선택을 기다리는 중이에요
+                </p>
+</section>
+</main>
+<!-- Bottom Navigation Suppressed intentionally as per rules for focused journey/task screen -->
+</div>
+</body></html>

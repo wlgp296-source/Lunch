@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lunch Roulette</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "tertiary": "#60233e",
+                    "on-tertiary-container": "#ffaac8",
+                    "accent-red": "#E14A3B",
+                    "surface-container-low": "#f3f4ed",
+                    "on-secondary-container": "#67645d",
+                    "inverse-on-surface": "#f0f1ea",
+                    "on-primary-fixed-variant": "#23501e",
+                    "inverse-surface": "#2e312c",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "primary": "#154212",
+                    "tertiary-fixed": "#ffd9e4",
+                    "primary-fixed": "#bcf0ae",
+                    "surface-container": "#edefe7",
+                    "tertiary-fixed-dim": "#ffb0cc",
+                    "on-background": "#191c18",
+                    "tertiary-container": "#7c3a55",
+                    "on-primary-container": "#9dd090",
+                    "background": "#f9faf2",
+                    "surface-dim": "#d9dbd3",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#494740",
+                    "on-tertiary-fixed": "#3b0520",
+                    "secondary-fixed": "#e7e2d8",
+                    "surface-container-high": "#e7e9e1",
+                    "accent-lime": "#A4C639",
+                    "surface-tint": "#3b6934",
+                    "on-surface": "#191c18",
+                    "on-surface-variant": "#42493e",
+                    "surface": "#f9faf2",
+                    "surface-stroke": "#E9E3D5",
+                    "accent-orange": "#F37021",
+                    "surface-variant": "#e2e3dc",
+                    "surface-bright": "#f9faf2",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#a1d494",
+                    "primary-container": "#2d5a27",
+                    "secondary-container": "#e7e2d8",
+                    "secondary-fixed-dim": "#cac6bd",
+                    "surface-container-highest": "#e2e3dc",
+                    "primary-fixed-dim": "#a1d494",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#1d1c16",
+                    "outline-variant": "#c2c9bb",
+                    "on-secondary": "#ffffff",
+                    "outline": "#72796e",
+                    "neutral-text": "#1A1C19",
+                    "on-tertiary-fixed-variant": "#71314c",
+                    "on-primary-fixed": "#002201",
+                    "secondary": "#615e57"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "container-margin": "20px",
+                    "stack-sm": "8px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": [
+                            "Manrope"
+                    ],
+                    "display-lg": [
+                            "Playfair Display"
+                    ],
+                    "headline-lg": [
+                            "Playfair Display"
+                    ],
+                    "body-lg": [
+                            "Manrope"
+                    ],
+                    "label-caps": [
+                            "Manrope"
+                    ],
+                    "headline-lg-mobile": [
+                            "Playfair Display"
+                    ],
+                    "title-md": [
+                            "Manrope"
+                    ]
+            },
+            "fontSize": {
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-lg-mobile": [
+                            "28px",
+                            {
+                                    "lineHeight": "36px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "title-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9faf2; /* surface */
+            color: #191c18; /* on-surface */
+        }
+        .hero-bg {
+            background-image: radial-gradient(circle at 50% -20%, #f3f4ed 0%, transparent 70%);
+        }
+        .roulette-shadow {
+            box-shadow: 0 10px 30px -10px rgba(59, 105, 52, 0.1);
+        }
+        .btn-shadow {
+            box-shadow: 0 4px 12px -2px rgba(21, 66, 18, 0.15);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center font-body-lg text-body-lg overflow-x-hidden">
+<!-- Mobile Container -->
+<main class="w-full max-w-[400px] min-h-[850px] relative bg-background shadow-2xl overflow-hidden flex flex-col md:rounded-3xl">
+<!-- Hero & Background Elements -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-40">
+<!-- Decorative food imagery placeholders in corners -->
+<img class="absolute -top-10 -left-10 w-40 h-40 object-cover rounded-full" data-alt="A small, stylized top-down bowl of warm soup with dumplings, resting on a clean cream surface, casting a soft elegant shadow, high-end culinary photography aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeV9SMlhGi0g1OPF_31ivDjuEdRiurOjMRk28GSR6HlrTu87t0i8zpYBbtm_9F6uB9E6xaT0A-9U0wtWWd8p77eZmilcNOSihwLjgGR_AT25OyZRnhA74bUnQ9y4dMgoGnONNlrsthPOO3Neae3vTgAHZDwUOjCEviPhAa4NJCywzXP84eU33SVHBYP41NtY7JDmoYzNI3ba3jjGOu8GJSnBsYElPD5COTpBe3LbN_YQif9ZikvSi3"/>
+<img class="absolute top-10 -right-12 w-32 h-32 object-cover rounded-full" data-alt="A small, stylized top-down plate of spicy kimchi, resting on a clean cream surface, casting a soft elegant shadow, modern korean editorial style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQw24Bp36Pc5Hpicz7FpkcYWRBqP0Nu67I_Qdqz5gruR85MFyt0D_lDgI9DS0M4YWIXHfQaHOvAuMKPkYOjBFzWiSvLIbXNxFLGEVey3hlQy5NQhiNqZOEG_JrQkqtnYP46EqGd1Vh78hh848VxQX-B42YW7kZtOWsgF87G1K8rv-vbf6_3A6DObrRs9Xuyfj0XKxVETWV1LxvV6IMmBztdyalj_TdP1NUfJS6MuAlL2rzHFQ_zXWb"/>
+</div>
+<div class="relative z-10 flex-1 flex flex-col items-center px-container-margin pt-20 pb-10 hero-bg">
+<!-- Logo Section -->
+<div class="text-center mb-10">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">Lunch<br/>Roulette</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2 font-medium">오늘 뭐 먹지?</p>
+</div>
+<!-- Roulette Illustration Placeholder -->
+<div class="w-64 h-64 mb-12 relative flex items-center justify-center roulette-shadow rounded-full bg-surface-container-lowest border-4 border-surface-stroke overflow-hidden">
+<!-- Conceptual SVG representation of the roulette -->
+<div class="absolute inset-0 rounded-full flex items-center justify-center">
+<svg class="w-full h-full opacity-30" viewbox="0 0 100 100">
+<path d="M50 50 L50 0 A50 50 0 0 1 100 50 Z" fill="#E9E3D5"></path>
+<path d="M50 50 L100 50 A50 50 0 0 1 50 100 Z" fill="#f3f4ed"></path>
+<path d="M50 50 L50 100 A50 50 0 0 1 0 50 Z" fill="#E9E3D5"></path>
+<path d="M50 50 L0 50 A50 50 0 0 1 50 0 Z" fill="#f3f4ed"></path>
+</svg>
+</div>
+<!-- Pointer -->
+<div class="absolute top-4 left-1/2 -translate-x-1/2 w-8 h-12 bg-primary rounded-t-full rounded-b-md z-20 shadow-md">
+<div class="w-2 h-2 bg-on-primary rounded-full mx-auto mt-2 opacity-50"></div>
+</div>
+<div class="w-12 h-12 bg-surface-container rounded-full z-10 flex items-center justify-center text-on-surface-variant text-xs">
+                     Spin
+                 </div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-4 mt-auto">
+<button class="w-full bg-primary text-on-primary flex items-center justify-between px-6 py-4 rounded-xl btn-shadow hover:scale-[0.98] transition-transform">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="font-title-md text-title-md">혼자 추천받기</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-full bg-surface-container-low text-primary flex items-center justify-between px-6 py-4 rounded-xl border border-surface-stroke hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[24px]">group</span>
+<span class="font-title-md text-title-md">팀 점심방 만들기</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-full bg-surface-container-low text-primary flex items-center justify-between px-6 py-4 rounded-xl border border-surface-stroke hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[24px]">link</span>
+<span class="font-title-md text-title-md">초대 링크로 참여</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Bottom Cityscape Illustration -->
+<div class="w-full h-24 mt-auto opacity-40 bg-repeat-x bg-bottom relative z-0" data-alt="A delicate, minimalist continuous line-art illustration of a modern city skyline with subtle trees, drawn in soft green ink on a warm cream background, elegant editorial style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuADVqV2ViOlfjel9YYVm4Hp0KtCIW36gzbTaTIwMReoShUhZBQCqD2xpnodiMGbe_6BvCTRmrCFCApJK8rUWSc4lNlQi6-9QwFBpN3jMLs59gAnvn7pkVIErww4mawKKc9ij18YkwyoizCK0C5SM5CxzUuq123v8JJB_ciW7tXy-bZjcOaAKxomPfS07EpbyVZWk0t2lTLtWextaoEKZ0Ebnbv16ro4u5pC0iQSNvXFm8Y4Rp8CRe7i'); background-size: auto 100%;"></div>
+</main>
+<!-- TopAppBar & BottomNavBar are suppressed as this is a landing/transactional entry screen -->
+</body></html>
