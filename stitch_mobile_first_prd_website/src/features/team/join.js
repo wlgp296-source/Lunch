@@ -34,7 +34,7 @@ export function bindTeamJoinEvents({ state, save, go }) {
         if (data.preferences) state.teamPreferences = { ...state.teamPreferences, ...data.preferences };
       }
     } catch { /* 서버가 없는 로컬 미리보기에서는 아래의 로컬 상태로 계속 진행합니다. */ }
-    const members = state.teamRoom.members || [];
+    const members = [...new Map((state.teamRoom.members || []).map(member => [member.name, member])).values()];
     if (!members.some(member => member.name === name)) members.push({ id: `member-${Date.now()}`, name, role: '팀원', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } });
     state.teamRoom = { ...state.teamRoom, inviteCode: code, currentUserName: name, members };
     save();

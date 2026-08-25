@@ -85,7 +85,6 @@ declare
   incoming_member jsonb;
   previous_member jsonb;
   member_index integer;
-  member_key text;
 begin
   if normalized_code !~ '^LUNCH-[0-9]{4}$' then
     raise exception 'invalid invite code';
@@ -98,16 +97,24 @@ begin
 
   stored_room := coalesce(stored_room, '{}'::jsonb);
   stored_preferences := coalesce(stored_preferences, '{}'::jsonb);
-  stored_members := coalesce(stored_room->'members', '[]'::jsonb);
+  stored_members := '[]'::jsonb;
 
+  -- 기존 목록과 새 목록을 합친 뒤, 같은 ID 또는 같은 닉네임은 한 명으로 정리합니다.
   for incoming_member in
-    select value from jsonb_array_elements(coalesce(p_room->'members', '[]'::jsonb))
+    select value from jsonb_array_elements(
+      coalesce(stored_room->'members', '[]'::jsonb) || coalesce(p_room->'members', '[]'::jsonb)
+    )
   loop
-    member_key := coalesce(incoming_member->>'id', incoming_member->>'name');
     select ordinality - 1, value
       into member_index, previous_member
       from jsonb_array_elements(stored_members) with ordinality as members(value, ordinality)
-      where coalesce(value->>'id', value->>'name') = member_key
+      where (
+        incoming_member->>'id' is not null
+        and value->>'id' = incoming_member->>'id'
+      ) or (
+        incoming_member->>'name' is not null
+        and value->>'name' = incoming_member->>'name'
+      )
       limit 1;
 
     if member_index is null then
