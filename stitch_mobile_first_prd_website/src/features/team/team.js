@@ -29,7 +29,10 @@ export function renderTeam(state) {
   const voteMeals = getTeamRecommendations(state.teamPreferences, state.teamRoom.members);
   const votes = voteSummary(state, voteMeals);
   const winners = winningMealIds(votes);
-  const decidedId = state.rouletteResult || (winners.length === 1 ? winners[0] : null);
+  const members = state.teamRoom.members || [];
+  const voters = state.teamRoom.teamVoters || {};
+  const allMembersVoted = members.length > 0 && members.every(member => Boolean(voters[member.id || member.name]));
+  const decidedId = state.rouletteResult || (allMembersVoted && winners.length === 1 ? winners[0] : null);
   const decidedMeal = meals.find(meal => meal.id === decidedId);
   const result = decidedMeal ? `<div class="result-banner">결정된 메뉴는 <b>${decidedMeal.name}</b>이에요!</div>` : '';
   const tie = !decidedMeal && winners.length > 1;
@@ -59,6 +62,9 @@ export function bindTeamEvents({ state, save, go, render }) {
     state.teamVotes[id] = Number(state.teamVotes[id] || 0) + (hasVote ? -1 : 1);
     state.teamRoom.menuRoundStarted = true;
     state.teamRoom.teamVotes = { ...state.teamVotes };
+    const currentMember = (state.teamRoom.members || []).find(member => member.name === state.teamRoom.currentUserName);
+    const voterKey = currentMember?.id || state.teamRoom.currentUserName;
+    state.teamRoom.teamVoters = { ...(state.teamRoom.teamVoters || {}), [voterKey]: state.myVotes.length > 0 };
     state.rouletteResult = null;
     save();
     publishTeamRoom(state).catch(() => {});

@@ -138,6 +138,9 @@ export function bindTeamRecommendationsEvents({ state, save, go, render }) {
   document.querySelectorAll('[data-action="team-vote"]').forEach(button => button.addEventListener('click', () => {
     state.teamRoom.menuRoundStarted = true;
     state.teamRoom.teamVotes = { ...state.teamVotes };
+    state.rouletteResult = null;
+    state.teamSelectedMeal = null;
+    state.teamMenuConfirmed = false;
     save();
     publishTeamRoom(state).catch(() => {});
     go('team-vote');

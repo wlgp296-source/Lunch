@@ -30,7 +30,15 @@ export function bindTeamCreateEvents({ state, save, go }) {
       hostName: name,
       currentUserName: name,
       members: [{ id: identityId, name, role: '대표', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } }],
+      menuRoundStarted: false,
+      teamVotes: {},
+      teamVoters: {},
     };
+    state.teamVotes = {};
+    state.myVotes = [];
+    state.rouletteResult = null;
+    state.teamSelectedMeal = null;
+    state.teamMenuConfirmed = false;
     const { memberMenuPreferences, ...teamPreferencesWithoutMember } = state.teamPreferences;
     state.teamPreferences = { ...teamPreferencesWithoutMember, location: '강남역 주변' };
     save();
