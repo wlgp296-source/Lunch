@@ -47,7 +47,7 @@ export function renderTeam(state) {
   const votedMemberCount = members.filter(member => Boolean(voters[member.id || member.name])).length;
   const voteStatus = allMembersVoted
     ? '<div class="vote-status complete">투표가 완료됐어요!</div>'
-    : `<div class="vote-status pending">현재 ${votedMemberCount}/${members.length}명이 투표했어요.</div>`;
+    : `<div class="vote-status pending"><b>투표 중</b><span>현재 ${votedMemberCount}/${members.length}명이 투표했어요.</span></div>`;
   const decidedId = state.rouletteResult || (allMembersVoted && winners.length === 1 ? winners[0] : null);
   const decidedMeal = meals.find(meal => meal.id === decidedId);
   const result = decidedMeal ? `<div class="result-banner">결정된 메뉴는 <b>${decidedMeal.name}</b>이에요!</div>` : '';
