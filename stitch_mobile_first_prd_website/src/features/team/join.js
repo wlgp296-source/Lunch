@@ -1,7 +1,7 @@
 import { icon, shell } from '../../shared/ui.js';
 import { routeParams } from '../../shared/router.js';
 import { publishTeamRoom } from '../../shared/team-sync.js';
-import { loadRecentMealNames } from '../../shared/supabase.js';
+import { ensureStableIdentityId, loadRecentMealNames } from '../../shared/supabase.js';
 
 export function renderTeamJoin(state) {
   const routeCode = routeParams().get('code') || '';
@@ -27,6 +27,7 @@ export function bindTeamJoinEvents({ state, save, go }) {
       return;
     }
     delete state.teamPreferences.memberMenuPreferences;
+    const identityId = await ensureStableIdentityId();
     try {
       const response = await fetch(`/api/team-room?code=${encodeURIComponent(code)}`);
       if (response.ok) {
@@ -35,10 +36,34 @@ export function bindTeamJoinEvents({ state, save, go }) {
         if (data.preferences) state.teamPreferences = { ...state.teamPreferences, ...data.preferences };
       }
     } catch { /* 서버가 없는 로컬 미리보기에서는 아래의 로컬 상태로 계속 진행합니다. */ }
-    const members = [...new Map((state.teamRoom.members || []).map(member => [member.name, member])).values()];
-    if (!members.some(member => member.name === name)) members.push({ id: `member-${Date.now()}`, name, role: '팀원', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } });
+    const members = [];
+    for (const member of state.teamRoom.members || []) {
+      const existingIndex = members.findIndex(item => item.id === member.id || item.name === member.name);
+      if (existingIndex < 0) members.push(member);
+      else members[existingIndex] = {
+        ...members[existingIndex],
+        ...member,
+        preferences: { ...(members[existingIndex].preferences || {}), ...(member.preferences || {}) },
+      };
+    }
+    let currentMemberIndex = members.findIndex(member => member.id === identityId);
+    // Legacy rooms may not have the anonymous identity yet. Matching the old
+    // nickname once lets the next save upgrade that member to the stable ID.
+    if (currentMemberIndex < 0) currentMemberIndex = members.findIndex(member => member.name === name);
+    if (currentMemberIndex < 0) {
+      members.push({ id: identityId, name, role: '팀원', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } });
+      currentMemberIndex = members.length - 1;
+    } else {
+      const previousMember = members[currentMemberIndex];
+      members[currentMemberIndex] = {
+        ...previousMember,
+        id: identityId,
+        name,
+        preferences: { ...(previousMember.preferences || {}) },
+      };
+    }
     state.teamRoom = { ...state.teamRoom, inviteCode: code, currentUserName: name, members };
-    const currentMember = members.find(member => member.name === name);
+    const currentMember = members[currentMemberIndex];
     if (currentMember) {
       const recentNames = await loadRecentMealNames().catch(() => []);
       currentMember.preferences = {

@@ -8,6 +8,7 @@ export const supabase = supabaseUrl && supabasePublishableKey
   : null;
 
 let anonymousUserPromise = null;
+const LOCAL_IDENTITY_KEY = 'lunch-roulette-anonymous-identity';
 
 export async function ensureSupabaseUser() {
   if (!supabase) return null;
@@ -27,6 +28,30 @@ export async function ensureSupabaseUser() {
   });
 
   return anonymousUserPromise;
+}
+
+// Nicknames are display names and can change from room to room. Keep a stable
+// browser identity for team membership and meal history instead.
+export async function ensureStableIdentityId() {
+  try {
+    const user = await ensureSupabaseUser();
+    if (user?.id) return user.id;
+  } catch {
+    // Local preview or a project with anonymous auth disabled uses the local
+    // fallback below. The same browser still keeps the same identity.
+  }
+
+  try {
+    let identity = localStorage.getItem(LOCAL_IDENTITY_KEY);
+    if (!identity) {
+      identity = globalThis.crypto?.randomUUID?.()
+        || `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem(LOCAL_IDENTITY_KEY, identity);
+    }
+    return identity;
+  } catch {
+    return `local-${Date.now()}`;
+  }
 }
 
 export async function saveMealHistory({ meal, source = 'solo', status = 'planned' }) {

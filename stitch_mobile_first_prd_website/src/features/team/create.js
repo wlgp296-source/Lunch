@@ -1,5 +1,6 @@
 import { icon, shell } from '../../shared/ui.js';
 import { publishTeamRoom } from '../../shared/team-sync.js';
+import { ensureStableIdentityId } from '../../shared/supabase.js';
 
 export function renderTeamCreate() {
   return shell(`
@@ -22,12 +23,13 @@ export function bindTeamCreateEvents({ state, save, go }) {
       return;
     }
     const code = `LUNCH-${Math.floor(1000 + Math.random() * 9000)}`;
+    const identityId = await ensureStableIdentityId();
     state.teamRoom = {
       roomId: `room-${Date.now()}`,
       inviteCode: code,
       hostName: name,
       currentUserName: name,
-      members: [{ id: 'host', name, role: '대표', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } }],
+      members: [{ id: identityId, name, role: '대표', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } }],
     };
     const { memberMenuPreferences, ...teamPreferencesWithoutMember } = state.teamPreferences;
     state.teamPreferences = { ...teamPreferencesWithoutMember, location: '강남역 주변' };
