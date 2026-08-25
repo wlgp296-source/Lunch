@@ -18,6 +18,9 @@
     { "id": "samgyetang", "name": "삼계탕", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["hangover"], "tasteTags": ["담백", "따뜻함", "보양"], "price": 15000 },
     { "id": "naengmyeon", "name": "냉면", "category": "한식", "fullness": "가볍게", "temperature": "차갑게", "form": "면", "cravings": ["sour", "mild"], "tasteTags": ["시원함", "새콤", "담백"], "price": 10000 },
     { "id": "japchae", "name": "잡채", "category": "한식", "fullness": "가볍게", "temperature": "뜨겁게", "form": "면", "cravings": ["mild"], "tasteTags": ["담백", "고소", "쫄깃"], "price": 11000 },
+    { "id": "galbi-jjim", "name": "갈비찜", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "고기", "cravings": ["mild"], "tasteTags": ["달콤", "짭짤", "부드러움"], "price": 15000 },
+    { "id": "sundae-guk", "name": "순대국", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["hangover", "mild"], "tasteTags": ["구수", "따뜻함", "해장"], "price": 9000 },
+    { "id": "dak-hanmari", "name": "닭한마리", "category": "한식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["mild", "hangover"], "tasteTags": ["담백", "따뜻함", "보양"], "price": 14000 },
 
     { "id": "jajangmyeon", "name": "짜장면", "category": "중식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "면", "cravings": ["mild"], "tasteTags": ["달콤", "짭짤", "고소"], "price": 7000 },
     { "id": "jjamppong", "name": "짬뽕", "category": "중식", "fullness": "든든하게", "temperature": "뜨겁게", "form": "국물", "cravings": ["spicy", "hangover"], "tasteTags": ["매콤", "얼큰", "해장"], "price": 9000 },
