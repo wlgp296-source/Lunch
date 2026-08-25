@@ -1,4 +1,4 @@
-import { getTeamRecommendations, isPriceWithinBudget } from '../../shared/data.js';
+import { getTeamRecommendations, isPriceWithinBudget, menuIntroduction } from '../../shared/data.js';
 import { icon, shell } from '../../shared/ui.js';
 import { addDrivingTimes, drivingSummary, filterByDrivingTime } from '../../shared/routing.js';
 import { addNaverPriceHints } from '../../shared/pricing.js';
@@ -120,7 +120,7 @@ export function renderTeamRecommendations(state) {
     ? recommendedMeals.map(meal => `<article class="meal-card" data-team-meal="${meal.id}"><div class="meal-image" data-menu-image="${meal.id}" style="background-image:url('${meal.image}')"></div><div class="meal-info"><div class="meal-heading"><h2>${meal.name}</h2><span class="match">매칭 ${meal.match}%</span></div><ul>${meal.reasons.map(reason => `<li>${reason}</li>`).join('')}<li class="muted">${icon('location')} ${meal.minutes}분 거리</li></ul></div></article>`).join('')
     : '<div class="empty-state"><h2>추천할 메뉴가 없어요</h2><p>조건을 조금 넓혀서 다시 설정해 주세요.</p></div>';
   const decidedMealNotice = hasConfirmedTeamMeal
-    ? `<div class="result-banner">메뉴 투표 결과: <b>${escapeHtml(state.teamSelectedMeal.name)}</b></div>`
+    ? `<div class="result-banner">메뉴 투표 결과: <b>${escapeHtml(state.teamSelectedMeal.name)}</b></div><div class="menu-introduction"><span class="eyebrow">오늘의 메뉴 소개</span><p>${escapeHtml(menuIntroduction(state.teamSelectedMeal))}</p></div>`
     : '<p class="section-help vote-step-help">아직 메뉴를 결정하지 않았어요. 아래 메뉴를 확인한 뒤 메뉴 투표를 진행해 주세요.</p>';
   const selectedMealContent = hasConfirmedTeamMeal
     ? `${decidedMealNotice}${restaurantPanel(state.teamSelectedMeal, state)}`

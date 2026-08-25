@@ -33,6 +33,15 @@ export const teamCravings = [
 export const recentMenus = ['돈까스', '제육볶음', '마라탕', '샐러드', '비빔밥', '파스타', '김밥', '쌀국수'];
 export const budgets = ['~ 7천원', '7천원 ~ 1만원', '1만원 ~ 1.5만원', '1.5만원 ~'];
 
+export function menuIntroduction(meal) {
+  if (!meal) return '';
+  const tags = (meal.tasteTags || []).slice(0, 2).join('과 ');
+  const taste = tags ? `${tags} 맛이 매력적인` : '개성이 느껴지는';
+  const temperature = meal.temperature === '뜨겁게' ? '따뜻하게 즐기기 좋고' : meal.temperature === '차갑게' ? '시원하게 즐기기 좋고' : '부담 없이 즐기기 좋고';
+  const fullness = meal.fullness === '든든하게' ? '든든한 한 끼' : meal.fullness === '가볍게' ? '가볍게 먹기 좋은 메뉴' : '편안한 한 끼';
+  return `${taste} ${meal.category} ${meal.name}이에요. ${temperature} ${fullness}로 잘 어울려요.`;
+}
+
 const normalizePreference = value => String(value ?? '').replace(/\s+/g, '').toLowerCase();
 
 function mealMatchesText(meal, values = []) {

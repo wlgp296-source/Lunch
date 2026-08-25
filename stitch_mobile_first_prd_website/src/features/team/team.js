@@ -1,8 +1,10 @@
-import { getTeamRecommendations, meals } from '../../shared/data.js';
+import { getTeamRecommendations, meals, menuIntroduction } from '../../shared/data.js';
 import { icon, shell } from '../../shared/ui.js';
 import { searchNaverImage } from '../../shared/images.js';
 import { saveMealHistory } from '../../shared/supabase.js';
 import { publishTeamRoom, startTeamRoomSync } from '../../shared/team-sync.js';
+
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 
 async function loadVoteImages(voteMeals) {
   await Promise.all((voteMeals || []).map(async meal => {
@@ -50,7 +52,7 @@ export function renderTeam(state) {
     : `<div class="vote-status pending"><b>투표 중</b><span>현재 ${votedMemberCount}/${members.length}명이 투표했어요.</span></div>`;
   const decidedId = state.rouletteResult || (allMembersVoted && winners.length === 1 ? winners[0] : null);
   const decidedMeal = meals.find(meal => meal.id === decidedId);
-  const result = decidedMeal ? `<div class="result-banner">결정된 메뉴는 <b>${decidedMeal.name}</b>이에요!</div>` : '';
+  const result = decidedMeal ? `<div class="result-banner">결정된 메뉴는 <b>${decidedMeal.name}</b>이에요!</div><div class="menu-introduction"><span class="eyebrow">오늘의 메뉴 소개</span><p>${escapeHtml(menuIntroduction(decidedMeal))}</p></div>` : '';
   const tie = !decidedMeal && winners.length > 1;
   const action = decidedMeal
     ? '<button class="primary-button" data-action="show-restaurants">결정된 메뉴 식당 찾기</button>'
