@@ -1,5 +1,9 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 const DATA_SOURCE_URL = 'https://www.data.go.kr/data/3045247/fileData.do?recommendDataYn=Y';
 const DEFAULT_API_URL = 'https://api.odcloud.kr/api/3045247/v1/uddi:12a36b40-6230-4401-b647-b8456a789c7f';
+const LOCAL_CSV_PATH = join(process.cwd(), 'public', 'data', 'good-price-shops.csv');
 
 const stripHtml = value => String(value ?? '').replace(/<[^>]*>/g, '');
 const normalize = value => stripHtml(value).replace(/\s+/g, '').toLowerCase();
@@ -22,6 +26,57 @@ function requestValue(request, name) {
 function parsePrice(value) {
   const price = Number(String(value ?? '').replace(/[^0-9]/g, ''));
   return Number.isFinite(price) && price > 0 ? price : null;
+}
+
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let quoted = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    const next = text[index + 1];
+
+    if (character === '"' && quoted && next === '"') {
+      value += '"';
+      index += 1;
+    } else if (character === '"') {
+      quoted = !quoted;
+    } else if (character === ',' && !quoted) {
+      row.push(value);
+      value = '';
+    } else if ((character === '\n' || character === '\r') && !quoted) {
+      if (character === '\r' && next === '\n') index += 1;
+      row.push(value);
+      if (row.some(cell => cell.trim())) rows.push(row);
+      row = [];
+      value = '';
+    } else {
+      value += character;
+    }
+  }
+
+  if (value || row.length) {
+    row.push(value);
+    if (row.some(cell => cell.trim())) rows.push(row);
+  }
+
+  const headers = rows.shift()?.map(header => header.replace(/^\uFEFF/, '').trim()) || [];
+  return rows.map(cells => headers.reduce((record, header, index) => {
+    record[header] = cells[index]?.trim() || '';
+    return record;
+  }, {}));
+}
+
+function readLocalRows() {
+  if (!existsSync(LOCAL_CSV_PATH)) return null;
+
+  const buffer = readFileSync(LOCAL_CSV_PATH);
+  let text = buffer.toString('utf8');
+  if (text.includes('\uFFFD')) text = new TextDecoder('euc-kr').decode(buffer);
+  const rows = parseCsv(text);
+  return rows.length ? rows : null;
 }
 
 function rowMenus(row) {
@@ -57,21 +112,30 @@ export default async function handler(request, response) {
   const apiUrl = config.apiUrl || process.env.MOIS_GOOD_PRICE_API_URL || DEFAULT_API_URL;
 
   if (!restaurantName || !mealName) return sendJson(response, 400, { error: '식당명과 메뉴명이 필요합니다.' });
-  if (!apiKey) return sendJson(response, 503, { error: 'MOIS_GOOD_PRICE_API_KEY가 설정되지 않았습니다.' });
 
   try {
-    const url = new URL(apiUrl);
-    url.searchParams.set('page', '1');
-    url.searchParams.set('perPage', '100');
-    url.searchParams.set('returnType', 'JSON');
-    url.searchParams.set('serviceKey', apiKey);
-    url.searchParams.set('cond[업소명::LIKE]', restaurantName);
+    const localRows = readLocalRows();
+    let rows = localRows;
+    let sourceUrl = DATA_SOURCE_URL;
 
-    const upstream = await fetch(url);
-    const data = await upstream.json();
-    if (!upstream.ok || !Array.isArray(data.data)) return sendJson(response, upstream.ok ? 502 : upstream.status, { error: '착한가격업소 API 응답을 확인하지 못했습니다.' });
+    if (!rows) {
+      if (!apiKey) return sendJson(response, 503, { error: '착한가격업소 CSV가 없고 MOIS_GOOD_PRICE_API_KEY도 설정되지 않았습니다.' });
 
-    const matched = data.data.map(row => ({ row, menu: matchRow(row, restaurantName, address, mealName) })).find(item => item.menu);
+      const url = new URL(apiUrl);
+      url.searchParams.set('page', '1');
+      url.searchParams.set('perPage', '100');
+      url.searchParams.set('returnType', 'JSON');
+      url.searchParams.set('serviceKey', apiKey);
+      url.searchParams.set('cond[업소명::LIKE]', restaurantName);
+
+      const upstream = await fetch(url);
+      const data = await upstream.json();
+      if (!upstream.ok || !Array.isArray(data.data)) return sendJson(response, upstream.ok ? 502 : upstream.status, { error: '착한가격업소 API 응답을 확인하지 못했습니다.' });
+      rows = data.data;
+      sourceUrl = apiUrl;
+    }
+
+    const matched = rows.map(row => ({ row, menu: matchRow(row, restaurantName, address, mealName) })).find(item => item.menu);
     if (!matched) return sendJson(response, 404, { matched: false });
 
     return sendJson(response, 200, {
@@ -80,7 +144,8 @@ export default async function handler(request, response) {
       address: stripHtml(matched.row.주소),
       menuName: matched.menu.name,
       price: matched.menu.price,
-      sourceUrl: DATA_SOURCE_URL,
+      sourceUrl,
+      sourceType: localRows ? 'csv' : 'api',
     });
   } catch {
     return sendJson(response, 502, { error: '착한가격업소 API에 연결하지 못했습니다.' });
