@@ -24,6 +24,8 @@ export const defaultState = {
     hostName: '',
     currentUserName: '',
     members: [],
+    menuRoundStarted: false,
+    teamVotes: {},
   },
   teamPreferences: {
     mood: ['든든하게'],

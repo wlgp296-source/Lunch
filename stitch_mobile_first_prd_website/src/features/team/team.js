@@ -2,6 +2,7 @@ import { getTeamRecommendations, meals } from '../../shared/data.js';
 import { icon, shell } from '../../shared/ui.js';
 import { searchNaverImage } from '../../shared/images.js';
 import { saveMealHistory } from '../../shared/supabase.js';
+import { publishTeamRoom, startTeamRoomSync } from '../../shared/team-sync.js';
 
 async function loadVoteImages(voteMeals) {
   await Promise.all((voteMeals || []).map(async meal => {
@@ -47,6 +48,7 @@ export function renderTeam(state) {
 }
 
 export function bindTeamEvents({ state, save, go, render }) {
+  startTeamRoomSync(state, save, render);
   const voteMeals = getTeamRecommendations(state.teamPreferences, state.teamRoom.members);
   loadVoteImages(voteMeals);
   document.querySelectorAll('[data-action="back"]').forEach(button => button.addEventListener('click', () => go('team-recommendations')));
@@ -55,8 +57,11 @@ export function bindTeamEvents({ state, save, go, render }) {
     const hasVote = state.myVotes.includes(id);
     state.myVotes = hasVote ? state.myVotes.filter(item => item !== id) : [...state.myVotes, id];
     state.teamVotes[id] = Number(state.teamVotes[id] || 0) + (hasVote ? -1 : 1);
+    state.teamRoom.menuRoundStarted = true;
+    state.teamRoom.teamVotes = { ...state.teamVotes };
     state.rouletteResult = null;
     save();
+    publishTeamRoom(state).catch(() => {});
     render();
   }));
   document.querySelectorAll('[data-action="spin"]').forEach(button => button.addEventListener('click', () => {

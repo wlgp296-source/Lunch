@@ -136,12 +136,10 @@ export function bindTeamRecommendationsEvents({ state, save, go, render }) {
   startTeamRoomSync(state, save, render);
   document.querySelectorAll('[data-action="back"], [data-action="team-preferences"]').forEach(button => button.addEventListener('click', () => go('team-preferences')));
   document.querySelectorAll('[data-action="team-vote"]').forEach(button => button.addEventListener('click', () => {
-    state.teamVotes = {};
-    state.myVotes = [];
-    state.rouletteResult = null;
-    state.teamSelectedMeal = null;
-    state.teamMenuConfirmed = false;
+    state.teamRoom.menuRoundStarted = true;
+    state.teamRoom.teamVotes = { ...state.teamVotes };
     save();
+    publishTeamRoom(state).catch(() => {});
     go('team-vote');
   }));
   document.querySelectorAll('[data-action="close-team-restaurant"]').forEach(button => button.addEventListener('click', () => {

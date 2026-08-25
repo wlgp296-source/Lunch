@@ -21,6 +21,7 @@ export async function syncTeamRoom(state, { save, onChange } = {}) {
   const currentUserName = state.teamRoom.currentUserName;
   const previous = JSON.stringify({ room: state.teamRoom, preferences: state.teamPreferences });
   state.teamRoom = { ...state.teamRoom, ...(data.room || {}), currentUserName: currentUserName || data.room?.currentUserName || '' };
+  if (data.room?.teamVotes) state.teamVotes = { ...data.room.teamVotes };
   if (data.preferences) state.teamPreferences = { ...state.teamPreferences, ...data.preferences };
   const changed = previous !== JSON.stringify({ room: state.teamRoom, preferences: state.teamPreferences });
   if (changed) {
