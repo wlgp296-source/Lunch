@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import goodPriceHandler from './api/good-price-search.js';
 
 let envFile = '';
 try {
@@ -11,6 +12,8 @@ const readEnv = name => envFile.match(new RegExp(`^${name}=(.*)$`, 'm'))?.[1]?.t
 const kakaoApiKey = readEnv('KAKAO_REST_API_KEY');
 const naverClientId = readEnv('NAVER_CLIENT_ID');
 const naverClientSecret = readEnv('NAVER_CLIENT_SECRET');
+const goodPriceApiKey = readEnv('MOIS_GOOD_PRICE_API_KEY');
+const goodPriceApiUrl = readEnv('MOIS_GOOD_PRICE_API_URL');
 const supabaseUrl = readEnv('NEXT_PUBLIC_SUPABASE_URL');
 const supabasePublishableKey = readEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
 const teamRooms = new Map();
@@ -369,6 +372,15 @@ export default {
             } catch (error) {
               sendJson(response, 502, { error: '네이버 이미지 검색에 연결하지 못했습니다.' });
             }
+          });
+
+          server.middlewares.use('/api/good-price-search', async (request, response, next) => {
+            if (request.method !== 'GET') {
+              next();
+              return;
+            }
+            request.goodPriceConfig = { apiKey: goodPriceApiKey, apiUrl: goodPriceApiUrl };
+            await goodPriceHandler(request, response);
           });
 
           server.middlewares.use('/api/driving-times', async (request, response, next) => {

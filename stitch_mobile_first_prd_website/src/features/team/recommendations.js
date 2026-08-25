@@ -1,7 +1,7 @@
 import { getTeamRecommendations, isPriceWithinBudget, menuIntroduction } from '../../shared/data.js';
 import { icon, shell } from '../../shared/ui.js';
 import { addDrivingTimes, drivingSummary, filterByDrivingTime } from '../../shared/routing.js';
-import { addNaverPriceHints } from '../../shared/pricing.js';
+import { addGoodPriceHints, addNaverPriceHints } from '../../shared/pricing.js';
 import { addNaverRestaurantImages, searchNaverImage } from '../../shared/images.js';
 import { publishTeamRoom, startTeamRoomSync } from '../../shared/team-sync.js';
 
@@ -66,7 +66,9 @@ function renderRestaurants(container, restaurants, maxMinutes, notice = '', stat
     const priceSource = restaurant.sourceUrl ? `<a class="source-link" href="${escapeHtml(restaurant.sourceUrl)}" target="_blank" rel="noreferrer">가격 출처</a>` : '';
     const photo = restaurant.imageUrl ? `<img class="restaurant-photo" src="${escapeHtml(restaurant.imageUrl)}" alt="${escapeHtml(restaurant.name)} 음식 사진" loading="lazy" />` : '';
     const priceText = Number.isFinite(restaurant.price)
-      ? `확인된 메뉴 가격 약 ${restaurant.price.toLocaleString('ko-KR')}원`
+      ? restaurant.goodPrice
+        ? `착한가격 메뉴 ${restaurant.price.toLocaleString('ko-KR')}원`
+        : `확인된 메뉴 가격 약 ${restaurant.price.toLocaleString('ko-KR')}원`
       : '메뉴 가격은 식당 메뉴에서 확인해주세요';
     const voteKey = restaurantVoteKey(meal, restaurant.name, restaurant.address);
     const voteCount = restaurantVoteCount(state, voteKey);
@@ -88,7 +90,8 @@ async function loadTeamRestaurants(state) {
     const withinDistance = filterByDrivingTime(withDrivingTimes, state.teamPreferences.distance)
       .sort((left, right) => (left.drivingMinutes ?? Number.POSITIVE_INFINITY) - (right.drivingMinutes ?? Number.POSITIVE_INFINITY))
       .slice(0, 3);
-    const withPriceHints = await addNaverPriceHints(withinDistance, state.teamSelectedMeal?.name || '', state.teamSelectedMeal?.price);
+    const withNaverPriceHints = await addNaverPriceHints(withinDistance, state.teamSelectedMeal?.name || '', state.teamSelectedMeal?.price);
+    const withPriceHints = await addGoodPriceHints(withNaverPriceHints, state.teamSelectedMeal?.name || '');
     const budget = state.teamPreferences.budget;
     const confirmedBudgetRestaurants = budget
       ? withPriceHints.filter(restaurant => Number.isFinite(restaurant.price) && isPriceWithinBudget(restaurant.price, budget))

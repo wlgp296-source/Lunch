@@ -103,6 +103,7 @@ export function findPriceHint(posts, { restaurantName, mealName, expectedPrice }
 }
 
 const priceCache = new Map();
+const goodPriceCache = new Map();
 
 export async function addNaverPriceHints(restaurants, mealName, expectedPrice) {
   return Promise.all((restaurants || []).map(async restaurant => {
@@ -119,5 +120,27 @@ export async function addNaverPriceHints(restaurants, mealName, expectedPrice) {
 
     const priceHint = await priceCache.get(query);
     return { ...restaurant, ...(priceHint || {}) };
+  }));
+}
+
+export async function addGoodPriceHints(restaurants, mealName) {
+  return Promise.all((restaurants || []).map(async restaurant => {
+    const cacheKey = `${restaurant.name}|${restaurant.address}|${mealName}`;
+    if (!goodPriceCache.has(cacheKey)) {
+      const params = new URLSearchParams({ restaurant: restaurant.name, address: restaurant.address || '', meal: mealName });
+      goodPriceCache.set(cacheKey, fetch(`/api/good-price-search?${params}`)
+        .then(async response => {
+          if (response.status === 404 || response.status === 503) return null;
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || '착한가격업소 검색에 실패했습니다.');
+          return data.matched ? data : null;
+        })
+        .catch(() => null));
+    }
+
+    const goodPrice = await goodPriceCache.get(cacheKey);
+    return goodPrice
+      ? { ...restaurant, price: goodPrice.price, sourceUrl: goodPrice.sourceUrl, goodPrice: true, goodPriceMenuName: goodPrice.menuName }
+      : restaurant;
   }));
 }
