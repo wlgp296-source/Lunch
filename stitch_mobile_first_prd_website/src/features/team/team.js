@@ -44,6 +44,10 @@ export function renderTeam(state) {
   const members = state.teamRoom.members || [];
   const voters = state.teamRoom.teamVoters || {};
   const allMembersVoted = members.length > 0 && members.every(member => Boolean(voters[member.id || member.name]));
+  const votedMemberCount = members.filter(member => Boolean(voters[member.id || member.name])).length;
+  const voteStatus = allMembersVoted
+    ? '<div class="vote-status complete">투표가 완료됐어요!</div>'
+    : `<div class="vote-status pending">현재 ${votedMemberCount}/${members.length}명이 투표했어요.</div>`;
   const decidedId = state.rouletteResult || (allMembersVoted && winners.length === 1 ? winners[0] : null);
   const decidedMeal = meals.find(meal => meal.id === decidedId);
   const result = decidedMeal ? `<div class="result-banner">결정된 메뉴는 <b>${decidedMeal.name}</b>이에요!</div>` : '';
@@ -58,7 +62,7 @@ export function renderTeam(state) {
     return `<button class="vote-card ${state.myVotes.includes(meal.id) ? 'voted' : ''}" data-vote="${meal.id}"><div class="vote-image" data-vote-image="${meal.id}" style="${meal.image ? `background-image:url('${meal.image}')` : ''}"></div><div class="vote-main"><div class="vote-heading"><h2>${meal.name}</h2><span>${count}표</span></div><div class="progress"><i style="width:${Math.min(count * 16.66, 100)}%"></i></div></div>${state.myVotes.includes(meal.id) ? `<em>${icon('check')}</em>` : ''}</button>`;
   }).join('');
   return shell(`
-    <section class="page-content team-content"><div class="team-progress"><span>1</span><i></i><span>2</span><i></i><span class="active">3</span></div>${result}${tie ? '<div class="tie-alert">ⓘ　동점입니다. 룰렛으로 메뉴를 결정해 주세요.</div>' : ''}<div class="vote-list">${voteCards}</div>${action}${tie ? '<div class="team-roulette"><div class="wheel" data-team-wheel><div class="wheel-dot dot-one"></div><div class="wheel-dot dot-two"></div><div class="wheel-dot dot-three"></div><span class="wheel-label">동점<br />룰렛</span></div><p>버튼을 누르면 동점 메뉴 중 하나를 정해요.</p></div>' : ''}</section>
+    <section class="page-content team-content"><div class="team-progress"><span>1</span><i></i><span>2</span><i></i><span class="active">3</span></div>${voteStatus}${result}${tie ? '<div class="tie-alert">ⓘ　동점입니다. 룰렛으로 메뉴를 결정해 주세요.</div>' : ''}<div class="vote-list">${voteCards}</div>${action}${tie ? '<div class="team-roulette"><div class="wheel" data-team-wheel><div class="wheel-dot dot-one"></div><div class="wheel-dot dot-two"></div><div class="wheel-dot dot-three"></div><span class="wheel-label">동점<br />룰렛</span></div><p>버튼을 누르면 동점 메뉴 중 하나를 정해요.</p></div>' : ''}</section>
   `, '우리팀 점심 투표');
 }
 
