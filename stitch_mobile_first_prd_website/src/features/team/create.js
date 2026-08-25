@@ -34,7 +34,11 @@ export function bindTeamCreateEvents({ state, save, go }) {
     const { memberMenuPreferences, ...teamPreferencesWithoutMember } = state.teamPreferences;
     state.teamPreferences = { ...teamPreferencesWithoutMember, location: '강남역 주변' };
     save();
-    await publishTeamRoom(state).catch(() => {});
+    const published = await publishTeamRoom(state).catch(() => false);
+    if (!published) {
+      window.alert('점심방을 저장하지 못했어요. 잠시 후 다시 만들어 주세요.');
+      return;
+    }
     go('team-lobby');
   }));
 }
