@@ -1,11 +1,18 @@
 import { readFileSync } from 'node:fs';
 
-const envFile = readFileSync(new URL('./.env', import.meta.url), 'utf8');
-const kakaoApiKey = envFile.match(/^KAKAO_REST_API_KEY=(.*)$/m)?.[1]?.trim() || '';
-const naverClientId = envFile.match(/^NAVER_CLIENT_ID=(.*)$/m)?.[1]?.trim() || '';
-const naverClientSecret = envFile.match(/^NAVER_CLIENT_SECRET=(.*)$/m)?.[1]?.trim() || '';
-const supabaseUrl = envFile.match(/^NEXT_PUBLIC_SUPABASE_URL=(.*)$/m)?.[1]?.trim() || '';
-const supabasePublishableKey = envFile.match(/^NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=(.*)$/m)?.[1]?.trim() || '';
+let envFile = '';
+try {
+  envFile = readFileSync(new URL('./.env', import.meta.url), 'utf8');
+} catch {
+  // 배포 환경에서는 비밀값을 파일로 올리지 않고 호스팅 환경변수로 주입합니다.
+}
+
+const readEnv = name => envFile.match(new RegExp(`^${name}=(.*)$`, 'm'))?.[1]?.trim() || process.env[name] || '';
+const kakaoApiKey = readEnv('KAKAO_REST_API_KEY');
+const naverClientId = readEnv('NAVER_CLIENT_ID');
+const naverClientSecret = readEnv('NAVER_CLIENT_SECRET');
+const supabaseUrl = readEnv('NEXT_PUBLIC_SUPABASE_URL');
+const supabasePublishableKey = readEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
 const teamRooms = new Map();
 
 const sendJson = (response, statusCode, payload) => {
