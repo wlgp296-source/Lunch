@@ -21,10 +21,9 @@ function normalizeBody(body) {
 export default async function handler(request, response) {
   if (!database) return sendJson(response, 500, { error: 'Supabase 환경변수가 Vercel에 설정되지 않았습니다.' });
 
-  const code = String(request.query.code || '').trim().toUpperCase();
-  if (!code) return sendJson(response, 400, { error: '초대 코드가 필요합니다.' });
-
   if (request.method === 'GET') {
+    const code = String(request.query.code || '').trim().toUpperCase();
+    if (!code) return sendJson(response, 400, { error: '초대 코드가 필요합니다.' });
     const { data, error } = await database.rpc('get_team_room', { p_invite_code: code });
 
     if (error) return sendJson(response, 500, { error: '팀방을 불러오지 못했습니다.' });
@@ -41,6 +40,10 @@ export default async function handler(request, response) {
   const body = normalizeBody(request.body);
   const incomingRoom = body.room || {};
   const incomingPreferences = body.preferences || {};
+  // The browser sends the code in the JSON room for POST requests. Accept a
+  // query parameter too so both direct API calls and the browser work.
+  const code = String(request.query.code || incomingRoom.inviteCode || body.inviteCode || '').trim().toUpperCase();
+  if (!code) return sendJson(response, 400, { error: '초대 코드가 필요합니다.' });
   const { data, error: writeError } = await database.rpc('upsert_team_room', {
     p_invite_code: code,
     p_room: incomingRoom,
