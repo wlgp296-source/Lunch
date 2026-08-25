@@ -46,11 +46,12 @@ export function renderTeam(state) {
     return `<button class="vote-card ${state.myVotes.includes(meal.id) ? 'voted' : ''}" data-vote="${meal.id}"><div class="vote-image" data-vote-image="${meal.id}" style="${meal.image ? `background-image:url('${meal.image}')` : ''}"></div><div class="vote-main"><div class="vote-heading"><h2>${meal.name}</h2><span>${count}표</span></div><div class="progress"><i style="width:${Math.min(count * 16.66, 100)}%"></i></div></div>${state.myVotes.includes(meal.id) ? `<em>${icon('check')}</em>` : ''}</button>`;
   }).join('');
   return shell(`
-    <section class="page-content team-content"><div class="team-progress"><span>1</span><i></i><span>2</span><i></i><span class="active">3</span></div>${result}${tie ? '<div class="tie-alert">ⓘ　동점입니다. 룰렛으로 메뉴를 결정해 주세요.</div>' : ''}<div class="vote-list">${voteCards}</div>${action}${tie ? '<div class="team-roulette"><div class="wheel"><div class="wheel-dot dot-one"></div><div class="wheel-dot dot-two"></div><div class="wheel-dot dot-three"></div><span class="wheel-label">동점<br />룰렛</span></div></div>' : ''}</section>
+    <section class="page-content team-content"><div class="team-progress"><span>1</span><i></i><span>2</span><i></i><span class="active">3</span></div>${result}${tie ? '<div class="tie-alert">ⓘ　동점입니다. 룰렛으로 메뉴를 결정해 주세요.</div>' : ''}<div class="vote-list">${voteCards}</div>${action}${tie ? '<div class="team-roulette"><div class="wheel" data-team-wheel><div class="wheel-dot dot-one"></div><div class="wheel-dot dot-two"></div><div class="wheel-dot dot-three"></div><span class="wheel-label">동점<br />룰렛</span></div><p>버튼을 누르면 동점 메뉴 중 하나를 정해요.</p></div>' : ''}</section>
   `, '우리팀 점심 투표');
 }
 
 export function bindTeamEvents({ state, save, go, render }) {
+  let spinning = false;
   startTeamRoomSync(state, save, render);
   const voteMeals = getTeamRecommendations(state.teamPreferences, state.teamRoom.members);
   loadVoteImages(voteMeals);
@@ -71,15 +72,23 @@ export function bindTeamEvents({ state, save, go, render }) {
     render();
   }));
   document.querySelectorAll('[data-action="spin"]').forEach(button => button.addEventListener('click', () => {
+    if (spinning) return;
     const voteMeals = getTeamRecommendations(state.teamPreferences, state.teamRoom.members);
     const candidates = winningMealIds(voteSummary(state, voteMeals));
-    if (!candidates.length) return;
-    state.rouletteResult = candidates[Math.floor(Math.random() * candidates.length)];
-    state.teamSelectedMeal = meals.find(meal => meal.id === state.rouletteResult) || null;
-    state.teamMenuConfirmed = true;
-    save();
-    saveMealHistory({ meal: state.teamSelectedMeal, source: 'team', status: 'planned' }).catch(() => {});
-    go('team-recommendations');
+    if (candidates.length < 2) return;
+    spinning = true;
+    button.disabled = true;
+    button.textContent = '룰렛이 돌아가는 중...';
+    document.querySelector('[data-team-wheel]')?.classList.add('spun');
+    window.setTimeout(() => {
+      state.rouletteResult = candidates[Math.floor(Math.random() * candidates.length)];
+      state.teamSelectedMeal = meals.find(meal => meal.id === state.rouletteResult) || null;
+      state.teamMenuConfirmed = true;
+      save();
+      publishTeamRoom(state).catch(() => {});
+      saveMealHistory({ meal: state.teamSelectedMeal, source: 'team', status: 'planned' }).catch(() => {});
+      go('team-recommendations');
+    }, 2700);
   }));
   document.querySelectorAll('[data-action="show-restaurants"]').forEach(button => button.addEventListener('click', () => {
     const voteMeals = getTeamRecommendations(state.teamPreferences, state.teamRoom.members);
