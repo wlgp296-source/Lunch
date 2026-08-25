@@ -83,6 +83,7 @@ declare
   stored_preferences jsonb;
   stored_members jsonb;
   incoming_member jsonb;
+  member_record record;
   previous_member jsonb;
   member_index integer;
 begin
@@ -100,12 +101,15 @@ begin
   stored_members := '[]'::jsonb;
 
   -- 기존 목록과 새 목록을 합친 뒤, 같은 ID 또는 같은 닉네임은 한 명으로 정리합니다.
-  for incoming_member in
-    (select elements.member
-       from jsonb_array_elements(
-         coalesce(stored_room->'members', '[]'::jsonb) || coalesce(p_room->'members', '[]'::jsonb)
-       ) as elements(member))
+  for member_record in
+    select elements.member
+      from jsonb_array_elements(
+        coalesce(stored_room->'members', '[]'::jsonb) || coalesce(p_room->'members', '[]'::jsonb)
+      ) as elements(member)
   loop
+    incoming_member := member_record.member;
+    member_index := null;
+    previous_member := null;
     select ordinality - 1, value
       into member_index, previous_member
       from jsonb_array_elements(stored_members) with ordinality as members(value, ordinality)
