@@ -1,6 +1,7 @@
 import { icon, shell } from '../../shared/ui.js';
 import { routeParams } from '../../shared/router.js';
 import { publishTeamRoom } from '../../shared/team-sync.js';
+import { loadRecentMealNames } from '../../shared/supabase.js';
 
 export function renderTeamJoin(state) {
   const routeCode = routeParams().get('code') || '';
@@ -37,6 +38,15 @@ export function bindTeamJoinEvents({ state, save, go }) {
     const members = [...new Map((state.teamRoom.members || []).map(member => [member.name, member])).values()];
     if (!members.some(member => member.name === name)) members.push({ id: `member-${Date.now()}`, name, role: '팀원', preferences: { fullness: '상관없음', temperature: '상관없음', category: '상관없음', form: '상관없음', cravings: [], recent: [], customCraving: '', restaurantVotes: [], completed: false } });
     state.teamRoom = { ...state.teamRoom, inviteCode: code, currentUserName: name, members };
+    const currentMember = members.find(member => member.name === name);
+    if (currentMember) {
+      const recentNames = await loadRecentMealNames().catch(() => []);
+      currentMember.preferences = {
+        ...(currentMember.preferences || {}),
+        recent: [...new Set([...(currentMember.preferences?.recent || []), ...recentNames])],
+      };
+      state.teamPreferences.memberMenuPreferences = { ...currentMember.preferences };
+    }
     save();
     await publishTeamRoom(state).catch(() => {});
     go('team-member-preferences');
