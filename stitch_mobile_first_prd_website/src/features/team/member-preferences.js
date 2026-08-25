@@ -40,7 +40,8 @@ export function renderTeamMemberPreferences(state) {
   const historyCards = history.length
     ? `<div class="recent-history-list">${history.map(record => `<button type="button" class="recent-history-card ${preferences.recent.includes(record.mealName) ? 'selected' : ''}" data-member-recent="${record.mealName}"><span class="recent-history-icon">🍽️</span><span class="recent-history-main"><b>${record.mealName}</b><small>${record.category || '점심 메뉴'}</small></span><span class="recent-history-date">${formatHistoryDate(record.eatenDate)}</span></button>`).join('')}</div>`
     : '<div class="recent-history-empty">아직 저장된 식사 기록이 없어요.</div>';
-  const recent = recentMenus.map(menu => `<button class="tag ${preferences.recent.includes(menu) ? 'selected' : ''}" data-member-recent="${menu}">${menu}</button>`).join('');
+  const recordedMealNames = new Set(history.map(record => record.mealName));
+  const recent = recentMenus.filter(menu => !recordedMealNames.has(menu)).map(menu => `<button class="tag ${preferences.recent.includes(menu) ? 'selected' : ''}" data-member-recent="${menu}">${menu}</button>`).join('');
   return shell(`<section class="page-content preference-content team-member-preferences"><div class="flow-intro"><div class="flow-icon">${icon('person')}</div><h2>${member?.name || '팀원'}님의 메뉴 조건</h2><p>팀원마다 자기 조건을 입력하면 공통으로 맞는 메뉴를 자동으로 찾아요.</p></div><div class="section-block"><h2>기본 취향</h2><p class="section-help">각 항목에서 하나씩 선택해 주세요.</p>${axisSections}</div><div class="section-block"><h2>오늘의 당김</h2><p class="section-help">여러 개를 선택할 수 있어요.</p><div class="taste-grid">${cravings}</div></div><div class="section-block"><h2>최근 먹은 메뉴</h2><p class="section-help">어제 먹은 메뉴부터 보여드려요. 누르면 오늘 추천에서 제외해요.</p>${historyCards}<p class="recent-history-label">빠른 선택</p><div class="tag-list">${recent}</div></div><button class="primary-button" data-action="save-member-preferences">내 조건 저장하기</button></section>`, '내 조건 입력');
 }
 
