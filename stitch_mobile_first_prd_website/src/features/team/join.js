@@ -28,14 +28,39 @@ export function bindTeamJoinEvents({ state, save, go }) {
     }
     delete state.teamPreferences.memberMenuPreferences;
     const identityId = await ensureStableIdentityId();
+    const previousCode = state.teamRoom.inviteCode;
+    const joiningDifferentRoom = Boolean(previousCode && previousCode !== code);
+    let loadedRemoteRoom = false;
     try {
       const response = await fetch(`/api/team-room?code=${encodeURIComponent(code)}`);
       if (response.ok) {
         const data = await response.json();
         state.teamRoom = { ...state.teamRoom, ...(data.room || {}), inviteCode: code, currentUserName: name };
         if (data.preferences) state.teamPreferences = { ...state.teamPreferences, ...data.preferences };
+        loadedRemoteRoom = true;
+      } else if (joiningDifferentRoom) {
+        window.alert('이 초대 링크의 점심방을 불러오지 못했어요. 링크가 정확한지 확인해 주세요.');
+        return;
       }
-    } catch { /* 서버가 없는 로컬 미리보기에서는 아래의 로컬 상태로 계속 진행합니다. */ }
+    } catch {
+      if (joiningDifferentRoom) {
+        window.alert('점심방 서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.');
+        return;
+      }
+      // 서버가 없는 로컬 미리보기에서는 아래의 로컬 상태로 계속 진행합니다.
+    }
+    // A new invite code must never inherit members from the previous room.
+    // This also prevents a temporary API failure from leaking old room data.
+    if (joiningDifferentRoom && !loadedRemoteRoom) {
+      state.teamRoom = {
+        ...state.teamRoom,
+        roomId: '',
+        inviteCode: code,
+        hostName: '',
+        currentUserName: name,
+        members: [],
+      };
+    }
     const members = [];
     for (const member of state.teamRoom.members || []) {
       const existingIndex = members.findIndex(item => item.id === member.id || item.name === member.name);
